@@ -7,6 +7,7 @@
         "noEmitOnError": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
     },
     "include": [
         "src/*",

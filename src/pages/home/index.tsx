@@ -10,6 +10,7 @@ import {ProjectPage} from '../project';
 import {DocumentPage} from '../document';
 import {SharePage} from '../share';
 import {AdminPage} from '../admin';
+import OverviewPage from '../overview';
 
 interface MainMenu {
     name: string;
@@ -25,6 +26,7 @@ export const Home = () => {
     const [page, setPage] = React.useState<JSX.Element>();
 
     const menus: MainMenu[] = [
+        {name: '总览', id: 'overview', icon: 'table', click: () => setPage(<OverviewPage/>)},
         {name: '工作台', id: 'task', icon: 'dashboard', click: () => setPage(<TaskPage uid={user.id}/>)},
         {name: '项目', id: 'project', icon: 'pie-chart', click: () => setPage(<ProjectPage uid={user.id}/>)},
         {name: '文档', id: 'document', icon: 'read', click: () => setPage(<DocumentPage/>)},
@@ -51,9 +53,9 @@ export const Home = () => {
             width: 350,
             header: '用户信息',
             body: <UserPage
-                user={user} 
-                notices={notices} 
-                onInfoChanged={fetchUserInfo} 
+                user={user}
+                notices={notices}
+                onInfoChanged={fetchUserInfo}
                 onNoticeChanged={fetchNotices}/>,
         });
     };
@@ -63,7 +65,7 @@ export const Home = () => {
             <Layout.Sider width={64}>
                 <div className='text-center mt-3 mb-1'>
                     <div onClick={openProfiler}>
-                        <Avatar size={48} src={user.avatar}/>                        
+                        <Avatar size={48} src={user.avatar}/>
                         {notices.length > 0&&<div style={{marginTop: -20}}><Badge theme='danger' className='r-1'>{notices.length}</Badge></div>}
                     </div>
                 </div>
