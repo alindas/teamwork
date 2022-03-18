@@ -15,6 +15,7 @@ interface Parameter {
 
 export const request = (param: Parameter) => {
     let init: RequestInit = { method: param.method || 'GET', credentials: "include" };
+    const url = process.env.NODE_ENV === 'production' ? param.url : `/api${param.url}`;
     if (param.data instanceof FormData || param.data instanceof URLSearchParams) {
         init.body = param.data
     } else {
@@ -26,9 +27,9 @@ export const request = (param: Parameter) => {
     if (!param.dontShowLoading) Loading.show();
 
     if (param.success == null) {
-        fetch(param.url, init).catch(() => null).then(finish);
+        fetch(url, init).catch(() => null).then(finish);
     } else {
-        fetch(param.url, init)
+        fetch(url, init)
             .then(res => res.json())
             .then((rsp: Response) => rsp.err ? Notification.alert(rsp.err, 'error') : param.success(rsp.data))
             .catch(() => null)
