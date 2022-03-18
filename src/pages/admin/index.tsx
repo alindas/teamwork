@@ -40,12 +40,12 @@ export const AdminPage = () => {
 
         const validator: {[k: string]: FormFieldValidator} = {
             account: {
-                required: '帐号不可为空', 
-                length: {min: 2, max: 32, message: '帐号最大32个字符'}, 
+                required: '帐号不可为空',
+                length: {min: 2, max: 32, message: '帐号最大32个字符'},
                 pattern: {test: /[\w\d_]+/, message: '帐号格式非法，只能使用数字、字母及下划线'}
             },
             name: {
-                required: '显示昵称不可为空', 
+                required: '显示昵称不可为空',
                 length: {min: 2, max: 32, message: '昵称最大32个字符'}
             },
             pswd: {
@@ -60,9 +60,9 @@ export const AdminPage = () => {
         const submit = (ev: React.FormEvent<HTMLFormElement>) => {
             ev.preventDefault();
             request({
-                url: `/admin/user`, 
-                method: 'POST', 
-                data: new FormData(ev.currentTarget), 
+                url: `/admin/user`,
+                method: 'POST',
+                data: new FormData(ev.currentTarget),
                 success: () => {
                     fetchUsers();
                     closer();
@@ -87,7 +87,7 @@ export const AdminPage = () => {
                         <Input.Password name='cfmPswd'/>
                     </Form.Field>
                     <Form.Field htmlFor='isSu'>
-                        <Input.Checkbox name='isSu' label='拥有超级管理员权限' value='1'/>
+                        <Input.Checkbox name='isSu' label='拥有超级管理员权限' value='1' checked/>
                     </Form.Field>
                 </Form>
             ),
@@ -101,22 +101,25 @@ export const AdminPage = () => {
 
         const validator: {[k: string]: FormFieldValidator} = {
             account: {
-                required: '帐号不可为空', 
-                length: {min: 2, max: 32, message: '帐号最大32个字符'}, 
+                required: '帐号不可为空',
+                length: {min: 2, max: 32, message: '帐号最大32个字符'},
                 pattern: {test: /[\w\d_]+/, message: '帐号格式非法，只能使用数字、字母及下划线'}
             },
             name: {
-                required: '显示昵称不可为空', 
+                required: '显示昵称不可为空',
                 length: {min: 2, max: 32, message: '昵称最大32个字符'}
+            },
+            password: {
+                required: '用户密码不能为空',
             },
         };
 
         const submit = (ev: React.FormEvent<HTMLFormElement>) => {
             ev.preventDefault();
             request({
-                url: `/admin/user/${user.id}`, 
-                method: 'PUT', 
-                data: new FormData(ev.currentTarget), 
+                url: `/admin/user/${user.id}`,
+                method: 'PUT',
+                data: new FormData(ev.currentTarget),
                 success: () => {
                     fetchUsers();
                     closer();
@@ -134,6 +137,9 @@ export const AdminPage = () => {
                     <Form.Field htmlFor='name' label='昵称'>
                         <Input name='name' value={user.name}/>
                     </Form.Field>
+                    {!!user.isSu && <Form.Field htmlFor='password' label='密码'>
+                        <Input name='password' value={''}/>
+                    </Form.Field>}
                     <Form.Field htmlFor='isSu'>
                         <Input.Checkbox name='isSu' label='拥有超级管理员权限' value='1' checked={user.isSu}/>
                     </Form.Field>

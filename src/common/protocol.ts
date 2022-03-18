@@ -19,6 +19,10 @@ export interface User {
      */
     avatar?: string,
     /**
+     * 密码
+     */
+    password?: string,
+    /**
      * 是否是内置帐号
      */
     isBuildin?: boolean,
