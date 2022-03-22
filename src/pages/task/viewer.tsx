@@ -54,7 +54,7 @@ const TaskDetailReadOnly = (props: {task: Task}) => {
             </span>
 
             <div className='divider-h my-1'/>
-            
+
             <div className='mt-3 mx-3' style={{minHeight: 300}}>
                 <Markdown.Renderer source={task.content}/>
             </div>
@@ -128,14 +128,20 @@ const TaskDetail = (props: {task: Task; closer: () => void; onModified: () => vo
     };
 
     const delTask = () => {
-        request({url: `/api/task/${task.id}`, method: 'DELETE', success: () => {
-            props.closer();
-            props.onModified();
-        }});
+        Modal.open({
+            title: '删除确认',
+            body: <div className='my-2'>确定要删除此任务吗？</div>,
+            onOk: () => {
+                request({url: `/api/task/${task.id}`, method: 'DELETE', success: () => {
+                    props.closer();
+                    props.onModified();
+                }});
+            }
+        });
     };
 
     return (
-        <div className='pt-3'>            
+        <div className='pt-3'>
             <Row flex={{align: 'middle', justify: 'space-between'}} className='mx-3 mb-3'>
                 <span style={{fontWeight: 'bold', fontSize: 18, maxWidth: 540}} className='text-ellipsis'>
                     {task.name}
@@ -203,7 +209,7 @@ const TaskDetail = (props: {task: Task; closer: () => void; onModified: () => vo
             {isCommentEditorShow&&<TaskDetail.CommentEditor task={task} onCancel={() => setCommentEditorShow(false)} onModified={() => setDirty(true)}/>}
             <div style={{position: 'absolute', right: 16, bottom: 16, fontSize: 32, userSelect: 'none'}}>
                 <Icon type='message' className='link' onClick={() => setCommentEditorShow(prev => !prev)}/>
-            </div>                       
+            </div>
         </div>
     );
 };
