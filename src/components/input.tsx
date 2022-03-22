@@ -78,7 +78,7 @@ interface UploaderProps {
     className?: string;
     style?: React.CSSProperties;
     children?: React.ReactNode;
-    
+
     customUpload?: (file: File) => void;
 };
 
@@ -89,7 +89,7 @@ interface DatePickerProps {
     placeholder?: string;
     disabled?: boolean;
 
-    mode?: 'datetime'|'date'|'time';
+    mode?: 'datetime'|'date'|'time' | ('year'|'month'|'time')[];
     value?: string;
     onChange?: (newValue: string) => void;
 }
@@ -158,7 +158,7 @@ Input.Radio = (props: RadioProps) => {
                     </div>
                 );
             })}
-        </div>        
+        </div>
     );
 };
 
@@ -194,7 +194,7 @@ Input.Switch = (props: SwitchProps) => {
 Input.Slider = (props: SliderProps) => {
     const {name, className, style, min, max, step, onChange} = props;
     const [amount, setAmount] = React.useState<number>(props.value||min);
-    const [dragging, setDragging] = React.useState<boolean>(false); 
+    const [dragging, setDragging] = React.useState<boolean>(false);
     const sliderRef = React.useRef<HTMLDivElement>(null);
     const progress = 100-(amount-min)*100/(max-min);
 
@@ -225,7 +225,7 @@ Input.Slider = (props: SliderProps) => {
             let coords = sliderRef.current.getBoundingClientRect();
             let percent = (ev.clientX - coords.left) / coords.width;
             setAmountByPercent(percent);
-        }        
+        }
     };
 
     const handleMouseUp = () => {
@@ -271,7 +271,7 @@ Input.Select = (props: React.SelectHTMLAttributes<HTMLSelectElement>) => {
         setSelected(ev.target.value);
         if (onChange) onChange(ev);
     };
-    
+
     React.useEffect(() => setSelected(props.value as string|number|string[]), [props.value]);
 
     return (

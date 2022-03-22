@@ -14,8 +14,8 @@ type TFilter = {
 }
 
 const InitialFilter = {
-  startDate: moment().add(1, 'd').format('YYYY-MM-DD'),
-  endDate: moment().add(1, 'd').format('YYYY-MM-DD'),
+  startDate: moment().add(1, 'd').format('YYYY-MM'),
+  endDate: moment().add(1, 'd').format('YYYY-MM'),
   member: '',
   task: ''
 }
@@ -72,11 +72,11 @@ export default function overview() {
         <Row flex={{align: 'middle', justify: 'center'}}>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>开始时间</label>
-            <DatePicker style={{ width: 128 }} name='startDate' mode='date' value={filter.startDate} />
+            <DatePicker style={{ width: 128 }} name='startDate' mode={['year','month']} value={filter.startDate} />
           </div>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>截至时间</label>
-            <DatePicker style={{ width: 128 }} name='endDate' mode='date' value={filter.endDate} />
+            <DatePicker style={{ width: 128 }} name='endDate' mode={['year','month']} value={filter.endDate} />
           </div>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>选择成员</label>

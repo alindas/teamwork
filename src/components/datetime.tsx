@@ -1,17 +1,18 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
-import {makeClass} from './basic';
-import {Button} from './button';
-import {Card} from './card';
-import {Row, Col} from './grid';
-import {Icon} from './icon';
+import { makeClass } from './basic';
+import { Button } from './button';
+import { Card } from './card';
+import { Row, Col } from './grid';
+import { Icon } from './icon';
 import './datetime.css';
 
-type DateTimeElem = 'year'|'month'|'day'|'time'|'none';
+type DateTimeElem = 'year' | 'month' | 'day' | 'time' | 'none' | ('year' | 'month' | 'time')[];
+type DateTimeElemArray = ('year' | 'month' | 'time')[];
 
 interface DateTimeProps {
-    mode?: 'datetime'|'date'|'time',
+    mode?: 'datetime' | 'date' | 'time' | ('year' | 'month' | 'time')[],
     value?: string;
     onChange: (newValue: string) => void;
 };
@@ -20,44 +21,66 @@ interface DateTimeElemProps {
     date: moment.Moment;
     onSwitch: (datetime: moment.Moment, to: DateTimeElem) => void;
     onSelect: (datetime: moment.Moment) => void;
+    type?: DateTimeElemArray,
+    customize?: DateTimeElemArray
 }
 
 export const DateTime = (props: DateTimeProps) => {
-    const [value, setValue] = React.useState<moment.Moment>(moment(props.value&&props.value.length>0?props.value:undefined));
+    const [value, setValue] = React.useState<moment.Moment>(moment(props.value && props.value.length > 0 ? props.value : undefined));
     const [view, setView] = React.useState<JSX.Element>(null);
     const mode = props.mode || 'datetime';
 
-    React.useEffect(() => pickView(value, mode=='time'?'time':'day', props.value), [props]);
+    React.useEffect(() => pickView(value, (mode === 'datetime' || mode === 'date') ? 'day' : mode, props.value), [props]);
 
-    const pickView = (date: moment.Moment, to: DateTimeElem, defaultValue: string) => {
-        let commonProps = {date: date, onSwitch: (d: moment.Moment, t: DateTimeElem) => pickView(d, t, defaultValue), onSelect: select};
+    const customizeView = (date: moment.Moment, to: DateTimeElemArray, defaultValue: string) => {
+        if (to.length < 2) pickView(date, to.length == 0 ? 'day' : to[0], defaultValue);
+        else {
+            let commonProps = { date: date, type: to, onSwitch: (d: moment.Moment, t: DateTimeElem) => pickView(d, t, defaultValue, to), onSelect: select };
+            setView(<DateTime.CustomerPicker {...commonProps} />)
+        };
+    }
 
+    const pickView = (date: moment.Moment, to: DateTimeElem, defaultValue: string, customize?: DateTimeElemArray) => {
+        let commonProps = { date: date, onSwitch: (d: moment.Moment, t: DateTimeElem) => pickView(d, t, defaultValue), onSelect: select, customize };
+        if (Array.isArray(to)) return customizeView(date, to, defaultValue);
         switch (to) {
-        case 'year': 
-            setView(<DateTime.YearPicker {...commonProps}/>);
-            break;
-        case 'month':
-            setView(<DateTime.MonthPicker {...commonProps}/>);
-            break;
-        case 'day':
-            setView(<DateTime.DayPicker hasTime={mode!='date'} {...commonProps}/>);
-            break;
-        case 'time':
-            setView(<DateTime.TimePicker hasDate={mode!='time'} {...commonProps}/>);
-            break;
-        default:
-            setValue(moment(props.value&&props.value.length>0?props.value:undefined));
-            props.onChange(props.value);
-            break;
+            case 'year':
+                setView(<DateTime.YearPicker {...commonProps} />);
+                break;
+            case 'month':
+                setView(<DateTime.MonthPicker {...commonProps} />);
+                break;
+            case 'day':
+                setView(<DateTime.DayPicker hasTime={mode != 'date'} {...commonProps} />);
+                break;
+            case 'time':
+                setView(<DateTime.TimePicker hasDate={mode != 'time'} {...commonProps} />);
+                break;
+            default:
+                setValue(moment(props.value && props.value.length > 0 ? props.value : undefined));
+                props.onChange(props.value);
+                break;
         }
     };
 
     const select = (date: moment.Moment) => {
         setValue(date);
-
-        if (mode == 'datetime') props.onChange(date.format('YYYY-MM-DD HH:mm:ss'));
-        else if (mode == 'date') props.onChange(date.format('YYYY-MM-DD'));
-        else props.onChange(date.format('HH:mm:ss'));
+        if (Array.isArray(mode)) {
+            if(mode.includes('month')) {
+                if(mode.includes('time')) props.onChange(date.format('YYYY-MM HH:mm:ss'));
+                else props.onChange(date.format('YYYY-MM'));
+            }
+            else if(mode.includes('time')) {
+                if(mode.includes('year')) props.onChange(date.format('YYYY HH:mm:ss'));
+                else props.onChange(date.format('HH:mm:ss'));
+            }
+            else props.onChange(date.format('YYYY'))
+        }
+        else {
+            if (mode == 'datetime') props.onChange(date.format('YYYY-MM-DD HH:mm:ss'));
+            else if (mode == 'date') props.onChange(date.format('YYYY-MM-DD'));
+            else props.onChange(date.format('HH:mm:ss'));
+        }
     };
 
     return view;
@@ -79,35 +102,35 @@ DateTime.YearPicker = (props: DateTimeElemProps) => {
         let row: JSX.Element[] = [];
 
         for (let count = 0; count < 15; count++) {
-            row.push(<td key={start+count} className={start+count==value.year()?'selected':undefined} onClick={() => setValue(moment(value).set('year', start+count))}>{start+count}年</td>);
+            row.push(<td key={start + count} className={start + count == value.year() ? 'selected' : undefined} onClick={() => setValue(moment(value).set('year', start + count))}>{start + count}年</td>);
             if (row.length == 3) {
                 rows.push(<tr key={rows.length}>{row}</tr>);
                 row = [];
             }
         }
-        
+
         setYears(rows);
     }, [value]);
 
     return (
         <Card
             header={(
-                <Row flex={{align: 'middle', justify: 'space-between'}} style={{height: 32, padding: '0 8px'}}>
-                    <Icon type='left' className='fg-dark' onClick={() => setValue(moment(value).subtract(15, 'year'))}/>
-                    <label style={{fontSize: 14}}>{`${getStartYear().year()}年 - ${getStartYear().year()+14}年`}</label>
-                    <Icon type='right' className='fg-dark' onClick={() => setValue(moment(value).add(15, 'year'))}/>
+                <Row flex={{ align: 'middle', justify: 'space-between' }} style={{ height: 32, padding: '0 8px' }}>
+                    <Icon type='left' className='fg-dark' onClick={() => setValue(moment(value).subtract(15, 'year'))} />
+                    <label style={{ fontSize: 14 }}>{`${getStartYear().year()}年 - ${getStartYear().year() + 14}年`}</label>
+                    <Icon type='right' className='fg-dark' onClick={() => setValue(moment(value).add(15, 'year'))} />
                 </Row>)}
             footer={(
-                <Row flex={{align: 'middle', justify: 'space-between'}} style={{height: 32}}>
-                    <Button theme='link' onClick={() => props.onSwitch(value, 'day')}>设置日期</Button>
+                <Row flex={{ align: 'middle', justify: !!props.customize ? 'space-between' : 'end' }} style={{ height: 32 }}>
+                    {!!props.customize && <Button theme='link' onClick={() => props.onSwitch(value, props.customize)}>设置日期</Button>}
                     <Button.Group>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); setValue(moment(value).set('year', moment().year())); }}>现在</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSelect(value)}}>确定</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSwitch(value, 'none')}}>取消</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); setValue(moment(value).set('year', moment().year())); }}>现在</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSelect(value) }}>确定</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSwitch(value, 'none') }}>取消</Button>
                     </Button.Group>
                 </Row>
             )}
-            style={{position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000}}
+            style={{ position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000 }}
             shadowed>
             <table className='datepicker-year'>
                 <tbody>
@@ -125,28 +148,28 @@ DateTime.MonthPicker = (props: DateTimeElemProps) => {
         ['五月', '六月', '七月', '八月'],
         ['九月', '十月', '十一月', '十二月'],
     ];
-    
+
     return (
         <Card
-            header={<p style={{height: 32, padding: '0 8px', textAlign: 'center'}}>选择月份</p>}
+            header={<p style={{ height: 32, padding: '0 8px', textAlign: 'center' }}>选择月份</p>}
             footer={(
-                <Row flex={{align: 'middle', justify: 'space-between'}} style={{height: 32}}>
-                    <Button theme='link' onClick={() => props.onSwitch(value, 'day')}>设置日期</Button>
+                <Row flex={{ align: 'middle', justify: !!props.customize ? 'space-between' : 'end' }} style={{ height: 32 }}>
+                    {!!props.customize && <Button theme='link' onClick={() => props.onSwitch(value, props.customize)}>设置日期</Button>}
                     <Button.Group>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); setValue(moment(value).set('month', moment().month())); }}>现在</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSelect(value)}}>确定</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSwitch(value, 'none')}}>取消</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); setValue(moment(value).set('month', moment().month())); }}>现在</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSelect(value) }}>确定</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSwitch(value, 'none') }}>取消</Button>
                     </Button.Group>
                 </Row>
             )}
-            style={{position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000}}
+            style={{ position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000 }}
             shadowed>
             <table className='datepicker-month'>
                 <tbody>
                     {months.map((r, i) => {
                         return (
                             <tr key={i}>
-                                {r.map((m, j) => <td key={m} className={i*4+j==value.month()?'selected':undefined} onClick={() => setValue(moment(value).set('month', i*4+j))}>{m}</td>)}
+                                {r.map((m, j) => <td key={m} className={i * 4 + j == value.month() ? 'selected' : undefined} onClick={() => setValue(moment(value).set('month', i * 4 + j))}>{m}</td>)}
                             </tr>
                         );
                     })}
@@ -156,42 +179,42 @@ DateTime.MonthPicker = (props: DateTimeElemProps) => {
     );
 };
 
-DateTime.DayPicker = (props: DateTimeElemProps & {hasTime?: boolean}) => {
+DateTime.DayPicker = (props: DateTimeElemProps & { hasTime?: boolean }) => {
     const [value, setValue] = React.useState<moment.Moment>(moment(props.date));
     const [days, setDays] = React.useState<JSX.Element[][]>([]);
 
     React.useEffect(() => {
         let tableDays: JSX.Element[][] = [];
-            let month = value.month();
+        let month = value.month();
 
-            let tableStart = moment(value).startOf('month').startOf('week');
-            let tableEnd = moment(value).endOf('month').endOf('week').subtract(1, 'day');
-            let weekOfYear = tableStart.weeks();
-            let lastWeek: JSX.Element[] = [];
+        let tableStart = moment(value).startOf('month').startOf('week');
+        let tableEnd = moment(value).endOf('month').endOf('week').subtract(1, 'day');
+        let weekOfYear = tableStart.weeks();
+        let lastWeek: JSX.Element[] = [];
 
-            for (let day = moment(tableStart); day.diff(tableEnd, 'days') <= 0; day.add(1, 'day')) {
-                let dayRef = moment(day);
-                let dayMonth = dayRef.month();
-                let dayValue = dayRef.date();
+        for (let day = moment(tableStart); day.diff(tableEnd, 'days') <= 0; day.add(1, 'day')) {
+            let dayRef = moment(day);
+            let dayMonth = dayRef.month();
+            let dayValue = dayRef.date();
 
-                if (day.weeks() != weekOfYear) {
-                    weekOfYear = day.weeks();
-                    tableDays.push(lastWeek);
-                    lastWeek = [];
-                }
-
-                lastWeek.push((
-                    <td
-                        key={dayRef.dayOfYear()}
-                        {...makeClass(dayMonth<month&&'prev', dayMonth>month&&'next', dayRef.dayOfYear()==value.dayOfYear()&&'selected')}
-                        onClick={() => setValue(dayRef)}>
-                        {dayValue}
-                    </td>
-                ));
+            if (day.weeks() != weekOfYear) {
+                weekOfYear = day.weeks();
+                tableDays.push(lastWeek);
+                lastWeek = [];
             }
 
-            if (lastWeek.length > 0) tableDays.push(lastWeek);
-            setDays(tableDays);
+            lastWeek.push((
+                <td
+                    key={dayRef.dayOfYear()}
+                    {...makeClass(dayMonth < month && 'prev', dayMonth > month && 'next', dayRef.dayOfYear() == value.dayOfYear() && 'selected')}
+                    onClick={() => setValue(dayRef)}>
+                    {dayValue}
+                </td>
+            ));
+        }
+
+        if (lastWeek.length > 0) tableDays.push(lastWeek);
+        setDays(tableDays);
     }, [value]);
 
     const useNow = (ev: React.MouseEvent<HTMLButtonElement>) => {
@@ -207,23 +230,23 @@ DateTime.DayPicker = (props: DateTimeElemProps & {hasTime?: boolean}) => {
     return (
         <Card
             header={(
-                <Row flex={{align: 'middle', justify: 'space-between'}} style={{height: 32, padding: '0 8px'}}>
-                    <Icon type='left' className='fg-dark' onClick={() => setValue(prev => moment(prev.subtract(1, 'month')))}/>
-                    <Button theme='link' className='fg-dark' onClick={ev => {ev.preventDefault(), props.onSwitch(value, 'year')}}>{value.year()} 年</Button>
-                    <Button theme='link' className='fg-dark' onClick={ev => {ev.preventDefault(), props.onSwitch(value, 'month')}}>{value.month()+1} 月</Button>
-                    <Icon type='right' className='fg-dark' onClick={() => setValue(prev => moment(prev.add(1, 'month')))}/>
+                <Row flex={{ align: 'middle', justify: 'space-between' }} style={{ height: 32, padding: '0 8px' }}>
+                    <Icon type='left' className='fg-dark' onClick={() => setValue(prev => moment(prev.subtract(1, 'month')))} />
+                    <Button theme='link' className='fg-dark' onClick={ev => { ev.preventDefault(), props.onSwitch(value, 'year') }}>{value.year()} 年</Button>
+                    <Button theme='link' className='fg-dark' onClick={ev => { ev.preventDefault(), props.onSwitch(value, 'month') }}>{value.month() + 1} 月</Button>
+                    <Icon type='right' className='fg-dark' onClick={() => setValue(prev => moment(prev.add(1, 'month')))} />
                 </Row>)}
             footer={(
-                <Row flex={{align: 'middle', justify: props.hasTime?'space-between':'end'}} style={{height: 32}}>
+                <Row flex={{ align: 'middle', justify: props.hasTime ? 'space-between' : 'end' }} style={{ height: 32 }}>
                     {props.hasTime && <Button theme='link' onClick={() => props.onSwitch(value, 'time')}>设置时间</Button>}
                     <Button.Group>
                         <Button size='sm' onClick={useNow}>现在</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSelect(value)}}>确定</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSwitch(value, 'none')}}>取消</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSelect(value) }}>确定</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSwitch(value, 'none') }}>取消</Button>
                     </Button.Group>
                 </Row>
             )}
-            style={{position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000}}
+            style={{ position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000 }}
             shadowed>
             <table className='datepicker-day'>
                 <thead>
@@ -245,11 +268,11 @@ DateTime.DayPicker = (props: DateTimeElemProps & {hasTime?: boolean}) => {
     );
 };
 
-DateTime.TimePicker = (props: DateTimeElemProps & {hasDate?: boolean}) => {
+DateTime.TimePicker = (props: DateTimeElemProps & { hasDate?: boolean }) => {
     const [value, setValue] = React.useState<moment.Moment>(moment(props.date));
     const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
     const minAndSecs = [
-        '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', 
+        '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14',
         '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29',
         '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44',
         '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
@@ -267,38 +290,80 @@ DateTime.TimePicker = (props: DateTimeElemProps & {hasDate?: boolean}) => {
     return (
         <Card
             header={(
-                <Row flex={{align: 'middle', justify: 'center'}} style={{height: 32}}>
+                <Row flex={{ align: 'middle', justify: 'center' }} style={{ height: 32 }}>
                     选择时间
                 </Row>)}
             footer={(
-                <Row flex={{align: 'middle', justify: props.hasDate?'space-between':'end'}} style={{height: 32}}>
+                <Row flex={{ align: 'middle', justify: props.hasDate ? 'space-between' : 'end' }} style={{ height: 32 }}>
                     {props.hasDate && <Button theme='link' onClick={() => props.onSwitch(value, 'day')}>设置日期</Button>}
                     <Button.Group>
                         <Button size='sm' onClick={useNow}>现在</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSelect(value)}}>确定</Button>
-                        <Button size='sm' onClick={ev => {ev.preventDefault(); props.onSwitch(value, 'none')}}>取消</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSelect(value) }}>确定</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); props.onSwitch(value, 'none') }}>取消</Button>
                     </Button.Group>
                 </Row>
             )}
-            style={{position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000}}
+            style={{ position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000 }}
             shadowed>
             <Row className='p-2 text-center'>
-                <Col span={{xs: 4}}>时</Col>
-                <Col span={{xs: 4}}>分</Col>
-                <Col span={{xs: 4}}>秒</Col>
+                <Col span={{ xs: 4 }}>时</Col>
+                <Col span={{ xs: 4 }}>分</Col>
+                <Col span={{ xs: 4 }}>秒</Col>
             </Row>
             <div className='datepicker-time'>
                 <ul>
-                    {hours.map((h, i) => <li key={i} className={value.hour()==i?`selected`:undefined} onClick={() => setValue(moment(value.set('hour', i)))}>{h}</li>)}
+                    {hours.map((h, i) => <li key={i} className={value.hour() == i ? `selected` : undefined} onClick={() => setValue(moment(value.set('hour', i)))}>{h}</li>)}
                 </ul>
                 <ul>
-                    {minAndSecs.map((m, i) => <li key={i} className={value.minute()==i?`selected`:undefined} onClick={() => setValue(moment(value.set('minute', i)))}>{m}</li>)}
+                    {minAndSecs.map((m, i) => <li key={i} className={value.minute() == i ? `selected` : undefined} onClick={() => setValue(moment(value.set('minute', i)))}>{m}</li>)}
                 </ul>
                 <ul>
-                    {minAndSecs.map((s, i) => <li key={i} className={value.second()==i?`selected`:undefined} onClick={() => setValue(moment(value.set('second', i)))}>{s}</li>)}
+                    {minAndSecs.map((s, i) => <li key={i} className={value.second() == i ? `selected` : undefined} onClick={() => setValue(moment(value.set('second', i)))}>{s}</li>)}
                 </ul>
             </div>
         </Card>
+    );
+};
+
+DateTime.CustomerPicker = (props: DateTimeElemProps) => {
+    const { date, onSwitch, onSelect, type } = props;
+    const [value, setValue] = React.useState<moment.Moment>(moment(date));
+    const ifIncludeMonth = type.includes('month');
+    const ifIncludeYear = type.includes('year');
+    const ifIncludeTime = type.includes('time');
+
+    const useNow = (ev: React.MouseEvent<HTMLButtonElement>) => {
+        ev.preventDefault();
+
+        let now = moment();
+        now.set('hour', value.hour());
+        now.set('minute', value.minute());
+        now.set('second', value.second());
+        setValue(now);
+    };
+
+    return (
+        <Card
+            header={(
+                <Row flex={{ align: 'middle', justify: 'space-between' }} style={{ height: 32, padding: '0 8px' }}>
+                    <Icon type='left' className='fg-dark' onClick={() => setValue(prev => moment(prev.subtract(1, ifIncludeMonth ? 'month' : 'year')))} />
+                    {ifIncludeYear && <Button theme='link' className='fg-dark' onClick={ev => { ev.preventDefault(), onSwitch(value, 'year') }}>{value.year()} 年</Button>}
+                    {ifIncludeMonth && <Button theme='link' className='fg-dark' onClick={ev => { ev.preventDefault(), onSwitch(value, 'month') }}>{value.month() + 1} 月</Button>}
+                    <Icon type='right' className='fg-dark' onClick={() => setValue(prev => moment(prev.add(1, ifIncludeMonth ? 'month' : 'year')))} />
+                </Row>)}
+            footer={(
+                <Row flex={{ align: 'middle', justify: ifIncludeTime ? 'space-between' : 'end' }} style={{ height: 32 }}>
+                    {ifIncludeTime && <Button theme='link' onClick={() => onSwitch(value, 'time')}>设置时间</Button>}
+                    <Button.Group>
+                        <Button size='sm' onClick={useNow}>现在</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); onSelect(value) }}>确定</Button>
+                        <Button size='sm' onClick={ev => { ev.preventDefault(); onSwitch(value, 'none') }}>取消</Button>
+                    </Button.Group>
+                </Row>
+            )}
+            style={{ position: 'absolute', width: 256, top: 4, left: -2, zIndex: 1000 }}
+            shadowed
+        />
     );
 };
 
