@@ -1,0 +1,72 @@
+.task-container {
+  position: relative;
+  margin-bottom: 1em;
+}
+
+.cloak {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  background-color: #ddd;
+  transition: opacity .3s ease;
+}
+
+.cloak div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  writing-mode: vertical-lr;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  color: #1a2a3a;
+  transition: flex .5s ease;
+}
+
+.cloak div:hover {
+  flex: 1.5;
+  background: #fff;
+}
+
+.task-container:hover .cloak {
+  opacity: .9;
+}
+
+.project-title {
+  width: 100%;
+}
+
+.project-title span {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.project-header {
+  padding: 0 8px;
+  height: 41px;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  overflow: hidden;
+  transition: height .5s ease;
+}
+
+.fill-in {
+  animation: fillIn 1.5s ease 1;
+}
+
+@keyframes fillIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

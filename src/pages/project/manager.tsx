@@ -5,7 +5,7 @@ import { Project, ProjectMember, User } from '../../common/protocol';
 import { request } from '../../common/request';
 import { ProjectRole } from '../../common/consts';
 
-export const Manager = (props: { pid: number, onDelete: () => void }) => {
+export const Manager = (props: { pid: number, onDelete: () => void, backOff: () => void }) => {
     const [proj, setProj] = React.useState<Project>();
     const refName = React.useRef<HTMLInputElement>(null);
 
@@ -162,9 +162,14 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
     };
 
     return (
-        <div className='m-4'>
+        <div style={{margin: '.5rem 1.5rem'}}>
+            <div>
+                <Button theme='link' size='sm' onClick={props.backOff}>
+                    <Icon type='backward' />返回
+                </Button>
+            </div>
             <Card
-                className='mt-3'
+                className='mt-1'
                 headerProps={{ className: 'py-2' }}
                 bodyProps={{ className: 'p-2' }}
                 header={
