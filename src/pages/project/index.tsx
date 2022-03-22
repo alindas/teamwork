@@ -101,7 +101,7 @@ export const ProjectPage = (props: { uid: number }) => {
                 const target = project.members.find(member => member.user.id == props.uid);
                 let isAdmin = target !== undefined ? target.isAdmin : false;
                 return (
-                    <Col span={{ xs: 2 }} style={{ minWidth: 302 }}>
+                    <Col span={{ xs: 2 }} style={{ minWidth: 302 }} key={project.id}>
                         <Card
                             headerProps={{ className: 'p-0 fg-white' }}
                             bodyProps={{ className: 'px-1 pb-1' }}

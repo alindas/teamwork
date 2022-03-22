@@ -45,7 +45,7 @@ export const Board = (props: BoardProps) => {
             exec: (a, b) => {
                 let offset = moment(a.startTime).diff(moment(b.startTime))
                 if (offset != 0) return offset;
-                
+
                 if (a.weight != b.weight) {
                     return b.weight - a.weight;
                 } else if (a.bringTop != b.bringTop) {
@@ -60,7 +60,7 @@ export const Board = (props: BoardProps) => {
             exec: (a, b) => {
                 let offset = moment(a.endTime).diff(moment(b.endTime))
                 if (offset != 0) return offset;
-                
+
                 if (a.weight != b.weight) {
                     return b.weight - a.weight;
                 } else if (a.bringTop != b.bringTop) {
@@ -116,7 +116,7 @@ export const Board = (props: BoardProps) => {
                     const state = TaskStatus[i];
 
                     return (
-                        <Col span={{xs:3}}>
+                        <Col span={{xs:3}} key={i}>
                             <Card
                                 headerProps={{className: 'p-0 fg-white'}}
                                 bodyProps={{className: 'px-1 pb-1'}}
@@ -154,7 +154,7 @@ export const Board = (props: BoardProps) => {
                                                     const endTime = moment(t.endTime);
 
                                                     return (
-                                                        <Draggable draggableId={`${t.id}`} index={i} isDragDisabled={props.onModified == null}>
+                                                        <Draggable draggableId={`${t.id}`} index={i} isDragDisabled={props.onModified == null} key={t.id}>
                                                             {(p, s) => (
                                                                 <div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}>
                                                                     <Card key={t.id} className='my-1 fg-muted' bordered style={{borderLeft: `4px solid ${endTime.diff(now) < 0?'red':'gray'}`}}>
@@ -163,9 +163,9 @@ export const Board = (props: BoardProps) => {
                                                                             <span><Icon type='branches' className='mr-1'/>{t.milestone?t.milestone.name:'默认'}</span>
                                                                         </Row>
                                                                         <Button
-                                                                            theme='link' 
-                                                                            className='p-0' 
-                                                                            fluid 
+                                                                            theme='link'
+                                                                            className='p-0'
+                                                                            fluid
                                                                             style={{textAlign: 'left', fontWeight: 'bold', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}
                                                                             onClick={() => Viewer.open(t.id, props.onModified)}>
                                                                             {t.bringTop&&<Badge theme='highlight' className='mr-1'>置顶</Badge>}
@@ -189,7 +189,7 @@ export const Board = (props: BoardProps) => {
                                         )}
                                     </Droppable>
                                 )}
-                            </Card>   
+                            </Card>
                         </Col>
                     );
                 })}
