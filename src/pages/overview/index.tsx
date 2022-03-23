@@ -123,8 +123,9 @@ export default function overview() {
           </div>
         </Row>
       </div>
-      <Table dataSource={tasksJson} columns={taskSchema} pagination={15}/>
-
+      <div className="overview-table">
+        <Table dataSource={tasksJson} columns={taskSchema} pagination={15}/>
+      </div>
     </div>
   );
 }

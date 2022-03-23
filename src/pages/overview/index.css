@@ -1,14 +1,18 @@
 ul,
 li {
   list-style: none;
-  text-indent: 1em;
 }
 
-li:not(:last-of-type) {
+.overview-table li {
+  text-indent: 1em;
+  white-space: nowrap;
+}
+
+.overview-table li:not(:last-of-type) {
   border-bottom: 1px solid #e6e6e6;
 }
 
-li > span {
+.overview-table li > span {
   text-indent: 0;
 }
 
