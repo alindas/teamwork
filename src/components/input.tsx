@@ -396,7 +396,6 @@ Input.DatePicker = (props: DatePickerProps) => {
                 value={value}
                 onChange={() => null}
                 onFocus={() => { !popup && setPopup(true); }}
-                onBlur={() => { popup && setPopup(false); }}
             />
             <div className='anchor' hidden={!popup}>
                 <DateTime mode={mode} value={value} onChange={handleChange} />
