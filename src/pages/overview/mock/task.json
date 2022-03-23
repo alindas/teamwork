@@ -11,13 +11,13 @@
           "name": "林沛宣",
           "startTime": "2022/3/16",
           "endTime": "2022/3/21",
-          "status": "finished"
+          "status": "pending"
         },
         {
           "name": "林伯儒",
           "startTime": "2022/3/16",
           "endTime": "2022/3/21",
-          "status": "pending"
+          "status": "developing"
         }
       ]
     },
@@ -28,7 +28,7 @@
           "name": "董丹燕",
           "startTime": "2022/3/16",
           "endTime": "2022/3/21",
-          "status": "testing"
+          "status": "finished"
         }
       ]
     }
@@ -47,7 +47,7 @@
           "name": "林沛宣",
           "startTime": "2022/3/16",
           "endTime": "2022/3/21",
-          "status": "finished"
+          "status": "testing"
         },
         {
           "name": "林伯儒",

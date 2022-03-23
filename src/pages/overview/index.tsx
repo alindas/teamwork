@@ -2,7 +2,7 @@ import * as moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Task, User } from "../../common/protocol";
 import { request } from "../../common/request";
-import { Button, Icon, Input, Row, Table, TableColumn } from "../../components";
+import { Badge, Button, Icon, Input, Row, Table, TableColumn } from "../../components";
 
 const { Select, DatePicker } = Input;
 import tasksJson from './mock/task.json';
@@ -52,12 +52,22 @@ export default function overview() {
     });
   };
 
+  const translateProjectStatus = (status: string) => {
+    switch(status) {
+      case 'pending': return <Badge>代办中</Badge>; break;
+      case 'developing': return <Badge theme='primary'>进行中</Badge>; break;
+      case 'finished': return <Badge theme='success'>已完成</Badge>; break;
+      case 'testing': return <Badge theme='info'>测试中</Badge>; break;
+      default: return <Badge>代办中</Badge>;
+    }
+  }
+
   const renderTable = (record: any, key: string) => {
     return (
       <ul>
         { record.map((task: any, i: number) =>
           <li key={i} style={{lineHeight: key == 'describe' ? `${28 * task.member.length}px` : '28px'} }>
-            { task[key] ? task[key] : renderTable(task.member, key) }
+            { task[key] ? (key == 'status' ? translateProjectStatus(task[key]) : task[key]) : renderTable(task.member, key) }
           </li>
         )}
       </ul>
