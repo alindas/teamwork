@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import {makeClass, makeId} from './basic';
-import {Icon} from './icon';
-import {DateTime} from './datetime';
+import { makeClass, makeId } from './basic';
+import { Icon } from './icon';
+import { DateTime } from './datetime';
 import './input.css';
 
 interface InputProps {
@@ -13,7 +13,7 @@ interface InputProps {
     style?: React.CSSProperties;
     addon?: React.ReactNode;
     placeholder?: string;
-    autoComplete?: 'on'|'off';
+    autoComplete?: 'on' | 'off';
 
     value?: string;
     onChange?: (newValue: string) => void;
@@ -89,16 +89,16 @@ interface DatePickerProps {
     placeholder?: string;
     disabled?: boolean;
 
-    mode?: 'datetime'|'date'|'time' | ('year'|'month'|'time')[];
+    mode?: 'datetime' | 'date' | 'time' | ('year' | 'month' | 'time')[];
     value?: string;
     onChange?: (newValue: string) => void;
 }
 
 export const Input = (props: InputProps) => {
-    const {disabled, name, addon, className, style, placeholder, autoComplete, onChange} = props;
-    const [value, setValue] = React.useState<string>(props.value||'');
+    const { disabled, name, addon, className, style, placeholder, autoComplete, onChange } = props;
+    const [value, setValue] = React.useState<string>(props.value || '');
 
-    React.useEffect(() => setValue(props.value||''), [props.value]);
+    React.useEffect(() => setValue(props.value || ''), [props.value]);
 
     const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
         setValue(ev.target.value);
@@ -106,18 +106,18 @@ export const Input = (props: InputProps) => {
     };
 
     return (
-        <div {...makeClass('input', addon&&'input-has-addon', className)} style={style}>
-            <input name={name} disabled={disabled} autoComplete={autoComplete} placeholder={placeholder} value={value} onChange={handleChange}/>
+        <div {...makeClass('input', addon && 'input-has-addon', className)} style={style}>
+            <input name={name} disabled={disabled} autoComplete={autoComplete} placeholder={placeholder} value={value} onChange={handleChange} />
             {addon}
         </div>
     );
 };
 
 Input.Checkbox = (props: CheckBoxProps) => {
-    const {name, label, value, onChange, disabled, className, style} = props;
-    const [checked, setChecked] = React.useState<boolean>(props.checked||false);
+    const { name, label, value, onChange, disabled, className, style } = props;
+    const [checked, setChecked] = React.useState<boolean>(props.checked || false);
 
-    React.useEffect(() => setChecked(props.checked||false), [props.checked]);
+    React.useEffect(() => setChecked(props.checked || false), [props.checked]);
 
     const handleClick = () => {
         if (!disabled) {
@@ -128,15 +128,15 @@ Input.Checkbox = (props: CheckBoxProps) => {
     };
 
     return (
-        <div {...makeClass('checkbox', disabled&&'disabled', checked&&'checked', className)} style={style} onClick={handleClick}>
-            <input type='checkbox' name={name} value={value} checked={checked} onChange={() => null} hidden/>
-            <Icon style={{fontSize: '1.2em'}} type={checked?'check-square-fill':'border'} className={`mr-1 ${checked?'fg-success':'fg-darker'}`}/><span>{label}</span>
+        <div {...makeClass('checkbox', disabled && 'disabled', checked && 'checked', className)} style={style} onClick={handleClick}>
+            <input type='checkbox' name={name} value={value} checked={checked} onChange={() => null} hidden />
+            <Icon style={{ fontSize: '1.2em' }} type={checked ? 'check-square-fill' : 'border'} className={`mr-1 ${checked ? 'fg-success' : 'fg-darker'}`} /><span>{label}</span>
         </div>
     );
 };
 
 Input.Radio = (props: RadioProps) => {
-    const {name, options, onChange, className, style} = props;
+    const { name, options, onChange, className, style } = props;
     const [value, setValue] = React.useState<string>(props.value);
 
     React.useEffect(() => setValue(props.value), [props.value]);
@@ -152,9 +152,9 @@ Input.Radio = (props: RadioProps) => {
         <div className={className} style={style}>
             {options.map((opt, idx) => {
                 return (
-                    <div key={idx} {...makeClass('radio', opt.disabled&&'disabled', value==opt.value&&'checked')} onClick={() => handleClick(opt)}>
-                        <input name={name} type='radio' value={opt.value} checked={opt.value==value} onChange={() => null} hidden={true}/>
-                        <i/><span>{opt.label}</span>
+                    <div key={idx} {...makeClass('radio', opt.disabled && 'disabled', value == opt.value && 'checked')} onClick={() => handleClick(opt)}>
+                        <input name={name} type='radio' value={opt.value} checked={opt.value == value} onChange={() => null} hidden={true} />
+                        <i /><span>{opt.label}</span>
                     </div>
                 );
             })}
@@ -163,10 +163,10 @@ Input.Radio = (props: RadioProps) => {
 };
 
 Input.Switch = (props: SwitchProps) => {
-    const {name, className, style, on, onChange, disabled} = props;
-    const [toggled, setToggled] = React.useState<boolean>(on||false);
+    const { name, className, style, on, onChange, disabled } = props;
+    const [toggled, setToggled] = React.useState<boolean>(on || false);
 
-    React.useEffect(() => setToggled(props.on||false), [props.on]);
+    React.useEffect(() => setToggled(props.on || false), [props.on]);
 
     const handleClick = () => {
         if (!disabled) {
@@ -177,28 +177,28 @@ Input.Switch = (props: SwitchProps) => {
     };
 
     return (
-        <div {...makeClass('switch', !toggled&&'switch-off', disabled&&'switch-disabled', className)} style={style} onClick={handleClick}>
-            <input type='checkbox' name={name} value='on' checked={toggled} onChange={() => null} hidden/>
+        <div {...makeClass('switch', !toggled && 'switch-off', disabled && 'switch-disabled', className)} style={style} onClick={handleClick}>
+            <input type='checkbox' name={name} value='on' checked={toggled} onChange={() => null} hidden />
 
-            {toggled?[
-                <div key='indicator' className='switch-indicator'/>,
+            {toggled ? [
+                <div key='indicator' className='switch-indicator' />,
                 <span key='status' className='switch-status'>ON</span>
-            ]:[
+            ] : [
                 <span key='status' className='switch-status'>OFF</span>,
-                <div key='indicator' className='switch-indicator'/>
+                <div key='indicator' className='switch-indicator' />
             ]}
         </div>
     );
 };
 
 Input.Slider = (props: SliderProps) => {
-    const {name, className, style, min, max, step, onChange} = props;
-    const [amount, setAmount] = React.useState<number>(props.value||min);
+    const { name, className, style, min, max, step, onChange } = props;
+    const [amount, setAmount] = React.useState<number>(props.value || min);
     const [dragging, setDragging] = React.useState<boolean>(false);
     const sliderRef = React.useRef<HTMLDivElement>(null);
-    const progress = 100-(amount-min)*100/(max-min);
+    const progress = 100 - (amount - min) * 100 / (max - min);
 
-    React.useEffect(() => setAmount(props.value||min), [props.value]);
+    React.useEffect(() => setAmount(props.value || min), [props.value]);
 
     const setAmountByPercent = (percent: number) => {
         if (percent < 0) percent = 0;
@@ -238,41 +238,41 @@ Input.Slider = (props: SliderProps) => {
 
     return (
         <div {...makeClass('slider', className)} style={style} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseLeave}>
-            <input name={name} type='text' value={amount} onChange={() => null} hidden/>
+            <input name={name} type='text' value={amount} onChange={() => null} hidden />
             <div ref={sliderRef} className='slider-bar'>
-                <div className='slider-value select-none pointer' style={{right: `${progress}%`}}>{amount}</div>
-                <div className='slider-progress' style={{right: `${progress}%`}}/>
-                <div className='slider-handle' style={{right: `${progress}%`}}/>
+                <div className='slider-value select-none pointer' style={{ right: `${progress}%` }}>{amount}</div>
+                <div className='slider-progress' style={{ right: `${progress}%` }} />
+                <div className='slider-handle' style={{ right: `${progress}%` }} />
             </div>
         </div>
     );
 };
 
 Input.Password = (props: PasswordProps) => {
-    const {name, className, style, placeholder} = props;
+    const { name, className, style, placeholder } = props;
     const [show, setShow] = React.useState<boolean>(false);
     const [value, setValue] = React.useState<string>('');
 
     return (
         <div {...makeClass('password', className)} style={style}>
             <div className='input-area'>
-                <input type={show?'text':'password'} width='100%' name={name} placeholder={placeholder} value={value} onChange={ev => setValue(ev.target.value)}/>
+                <input type={show ? 'text' : 'password'} width='100%' name={name} placeholder={placeholder} value={value} onChange={ev => setValue(ev.target.value)} />
             </div>
-            <Icon type={show?`eye-fill`:`eye-close-fill`} style={{color: show?'#909090':'#e2e2e2'}} onClick={() => setShow(!show)}/>
+            <Icon type={show ? `eye-fill` : `eye-close-fill`} style={{ color: show ? '#909090' : '#e2e2e2' }} onClick={() => setShow(!show)} />
         </div>
     );
 };
 
 Input.Select = (props: React.SelectHTMLAttributes<HTMLSelectElement>) => {
-    const {className, style, value, onChange, children, ...nativeProps} = props;
-    const [selected, setSelected] = React.useState<string|number|string[]>(value as string|number|string[]);
+    const { className, style, value, onChange, children, ...nativeProps } = props;
+    const [selected, setSelected] = React.useState<string | number | string[]>(value as string | number | string[]);
 
     const handleChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
         setSelected(ev.target.value);
         if (onChange) onChange(ev);
     };
 
-    React.useEffect(() => setSelected(props.value as string|number|string[]), [props.value]);
+    React.useEffect(() => setSelected(props.value as string | number | string[]), [props.value]);
 
     return (
         <div {...makeClass('select', className)} style={style}>
@@ -284,7 +284,7 @@ Input.Select = (props: React.SelectHTMLAttributes<HTMLSelectElement>) => {
 };
 
 Input.Textarea = React.forwardRef((props: React.TextareaHTMLAttributes<HTMLTextAreaElement>, ref: React.RefObject<HTMLTextAreaElement>) => {
-    const {className, style, value, onChange, ...nativeProps} = props;
+    const { className, style, value, onChange, ...nativeProps } = props;
     const [content, setContent] = React.useState<string>(value as string);
 
     const handleChange = (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -296,16 +296,16 @@ Input.Textarea = React.forwardRef((props: React.TextareaHTMLAttributes<HTMLTextA
 
     return (
         <div {...makeClass('input', className)} style={style}>
-            <textarea ref={ref} value={content} onChange={handleChange} {...nativeProps}/>
+            <textarea ref={ref} value={content} onChange={handleChange} {...nativeProps} />
         </div>
     );
 });
 
 Input.Uploader = (props: UploaderProps) => {
-    const {name, accept, className, style, children, customUpload} = props;
-    const [uploaded, setUploaded] = React.useState<{itemId: string; node: React.ReactNode}[]>([]);
+    const { name, accept, className, style, children, customUpload } = props;
+    const [uploaded, setUploaded] = React.useState<{ itemId: string; node: React.ReactNode }[]>([]);
 
-    const Item = (props: {itemId: string}) => {
+    const Item = (props: { itemId: string }) => {
         const [autoClicked, setAutoClicked] = React.useState<boolean>(false);
         const [valid, setValid] = React.useState<boolean>(false);
         const [fileName, setFileName] = React.useState<string>('');
@@ -337,9 +337,9 @@ Input.Uploader = (props: UploaderProps) => {
 
         return (
             <div className='uploader-item' hidden={!valid}>
-                <input ref={autoClick} type='file' name={name} accept={accept} onChange={handleChange} hidden/>
+                <input ref={autoClick} type='file' name={name} accept={accept} onChange={handleChange} hidden />
                 <span>{fileName}</span>
-                <Icon type='close' className='ml-2' onClick={removeSelf}/>
+                <Icon type='close' className='ml-2' onClick={removeSelf} />
             </div>
         );
     };
@@ -351,7 +351,7 @@ Input.Uploader = (props: UploaderProps) => {
             const input = document.createElement('input');
             input.name = name;
             input.type = 'file';
-            input.accept = accept||'*/*';
+            input.accept = accept || '*/*';
             input.hidden = true;
             input.addEventListener('change', () => {
                 if (input.files.length > 0) customUpload(input.files[0]);
@@ -361,7 +361,7 @@ Input.Uploader = (props: UploaderProps) => {
             input.click();
         } else {
             let itemId = makeId();
-            setUploaded([...uploaded, {itemId: itemId, node: <Item itemId={itemId} key={itemId}/>}]);
+            setUploaded([...uploaded, { itemId: itemId, node: <Item itemId={itemId} key={itemId} /> }]);
         }
     };
 
@@ -370,14 +370,14 @@ Input.Uploader = (props: UploaderProps) => {
             <div onClick={handleClick}>
                 {children}
             </div>
-            {uploaded.length>0&&<div className='uploader-list'>{uploaded.map(v => v.node)}</div>}
+            {uploaded.length > 0 && <div className='uploader-list'>{uploaded.map(v => v.node)}</div>}
         </div>
     );
 };
 
 Input.DatePicker = (props: DatePickerProps) => {
-    const {name, className, style, placeholder, disabled, mode, onChange} = props;
-    const [value, setValue] = React.useState<string>(props.value||'');
+    const { name, className, style, placeholder, disabled, mode, onChange } = props;
+    const [value, setValue] = React.useState<string>(props.value || '');
     const [popup, setPopup] = React.useState<boolean>(false);
 
     const handleChange = (date: string) => {
@@ -387,10 +387,19 @@ Input.DatePicker = (props: DatePickerProps) => {
     };
 
     return (
-        <div {...makeClass('input', className)} style={{...style}}>
-            <input name={name} autoComplete='off' disabled={disabled} placeholder={placeholder} value={value} onChange={() => null} onFocus={() => {if (!popup) setPopup(true);}}/>
+        <div {...makeClass('input', className)} style={{ ...style }}>
+            <input
+                name={name}
+                autoComplete='off'
+                disabled={disabled}
+                placeholder={placeholder}
+                value={value}
+                onChange={() => null}
+                onFocus={() => { !popup && setPopup(true); }}
+                onBlur={() => { popup && setPopup(false); }}
+            />
             <div className='anchor' hidden={!popup}>
-                <DateTime mode={mode} value={value} onChange={handleChange}/>
+                <DateTime mode={mode} value={value} onChange={handleChange} />
             </div>
         </div>
     );
