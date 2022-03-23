@@ -3,6 +3,8 @@ import * as React from 'react';
 import { Icon, Markdown, Button, Card, Row } from '../../components';
 import { Project, ProjectSummary } from '../../common/protocol';
 import { request } from '../../common/request';
+import { MDEditor, MDViewer } from '../../components/bytemd';
+
 
 export const Summary = (props: { proj: Project, isAdmin: boolean, backOff: () => void }) => {
     const [summary, setSummary] = React.useState<ProjectSummary>(null);
@@ -38,7 +40,7 @@ export const Summary = (props: { proj: Project, isAdmin: boolean, backOff: () =>
                 <div className='p-2'>
                     {isEditingDesc
                         ? <Summary.DescEditor pid={props.proj.id} desc={summary.desc} onCancel={() => setEditingDesc(false)} onModified={fetchSummary} />
-                        : <Markdown.Renderer source={summary.desc || '管理员很懒，并没写什么描述'} />}
+                        : <MDViewer content={summary.desc || '管理员很懒，并没写什么描述'}/>}
                 </div>
 
                 <p style={{ marginTop: 8, fontSize: 15, fontWeight: 'bolder' }}>
@@ -103,7 +105,7 @@ Summary.DescEditor = (props: { pid: number, desc: string, onCancel: () => void, 
 
     return (
         <div>
-            <Markdown.Editor value={content} onChange={setContent} rows={12} onUpload={uploader} />
+            <MDEditor content={content} setContent={setContent} />
             <div className='mt-2 center-child'>
                 <Button theme='primary' size='sm' onClick={modify}>修改</Button>
                 <Button size='sm' onClick={props.onCancel}>取消</Button>
