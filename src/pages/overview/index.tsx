@@ -1,10 +1,12 @@
 import * as moment from "moment";
 import React, { useEffect, useState } from "react";
-import { User } from "../../common/protocol";
+import { Task, User } from "../../common/protocol";
 import { request } from "../../common/request";
 import { Button, Icon, Input, Row, Table, TableColumn } from "../../components";
 
 const { Select, DatePicker } = Input;
+import tasksJson from './mock/task.json';
+import './index.css';
 
 type TFilter = {
   startDate: string,
@@ -22,21 +24,24 @@ const InitialFilter = {
 
 export default function overview() {
   const [filter, setFilter] = useState<TFilter>(InitialFilter);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
   const taskSchema: TableColumn[] = [
-    {label: '项目', dataIndex: 'name'},
-    {label: '完成要求', dataIndex: 'account'},
-    {label: '完成时间', dataIndex: 'account'},
-    {label: '负责人', dataIndex: 'account'},
-    {label: '细分任务', dataIndex: 'account'},
-    {label: '开始时间', dataIndex: 'account'},
-    {label: '完成时间', dataIndex: 'account'},
-    {label: '成员', align: 'center', renderer: (data: User) => <label>{data.isBuildin?'是':'否'}</label>},
-    {label: '速度记录', align: 'center', renderer: (data: User) => <Input.Switch on={data.isSu} disabled={true}/>},
-];
+    { label: '项目', dataIndex: 'name' },
+    { label: '完成要求', dataIndex: 'requirements'},
+    { label: '完成时间', dataIndex: 'deadline' },
+    { label: '负责人', dataIndex: 'leader' },
+    { label: '细分任务', dataIndex: 'describe', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'describe'), style: {padding: 0} },
+    { label: '开始时间', dataIndex: 'startTime', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'startTime'), style: {padding: 0} },
+    { label: '完成时间', dataIndex: 'endTime', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'endTime'), style: {padding: 0} },
+    { label: '成员', dataIndex: 'member', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'name'), style: {padding: 0} },
+    { label: '项目状态', dataIndex: 'status', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'status'), style: {padding: 0} },
+  ];
 
-  useEffect(() => fetchUsers(), []);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const fetchUsers = () => {
     request({
@@ -46,6 +51,18 @@ export default function overview() {
       }
     });
   };
+
+  const renderTable = (record: any, key: string) => {
+    return (
+      <ul>
+        { record.map((task: any, i: number) =>
+          <li key={i} style={{lineHeight: key == 'describe' ? `${28 * task.member.length}px` : '28px'} }>
+            { task[key] ? task[key] : renderTable(task.member, key) }
+          </li>
+        )}
+      </ul>
+    )
+  }
 
   const handleMemberChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
     const member = ev.target.value;
@@ -69,20 +86,20 @@ export default function overview() {
   return (
     <div>
       <div style={{ padding: '8px', borderBottom: '1px solid #E2E2E2' }}>
-        <Row flex={{align: 'middle', justify: 'center'}}>
+        <Row flex={{ align: 'middle', justify: 'center' }}>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>开始时间</label>
-            <DatePicker style={{ width: 128 }} name='startDate' mode={['year','month']} value={filter.startDate} />
+            <DatePicker style={{ width: 128 }} name='startDate' mode={['year', 'month']} value={filter.startDate} />
           </div>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>截至时间</label>
-            <DatePicker style={{ width: 128 }} name='endDate' mode={['year','month']} value={filter.endDate} />
+            <DatePicker style={{ width: 128 }} name='endDate' mode={['year', 'month']} value={filter.endDate} />
           </div>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>选择成员</label>
             <Select style={{ width: 128 }} value={filter.member} onChange={handleMemberChange}>
               <option key={'none'} value={''}>无</option>
-              { users.map(user => <option key={user.id} value={user.account}>{user.account}</option>) }
+              {users.map(user => <option key={user.id} value={user.account}>{user.account}</option>)}
             </Select>
           </div>
           <div className='ml-3' style={{ marginRight: '1em' }}>
@@ -96,7 +113,7 @@ export default function overview() {
           </div>
         </Row>
       </div>
-      <Table dataSource={[]} columns={taskSchema} pagination={15}/>
+      <Table dataSource={tasksJson} columns={taskSchema} pagination={15}/>
 
     </div>
   );

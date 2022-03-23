@@ -12,6 +12,7 @@ export interface TableColumn {
     dataIndex?: string;
     align?: "left" | "center" | "right" | "justify" | "char";
     width?: number|string;
+    style?: React.CSSProperties;
 
     renderer?: (record: any, row: number, cell: number) => React.ReactNode;
     sorter?: (a: any, b: any) => number;
@@ -53,7 +54,7 @@ export const Table = (props: TableProps) => {
         let end = Math.min((curPage+1)*displayNumber, dataSource.length);
         setRecords(dataSource.slice(start, end));
     }, [dataSource, displayNumber, page, totalPage]);
-    
+
     const makeHeader = (col: TableColumn, idx: number) => {
         let sorted = sortTimes[idx];
 
@@ -75,7 +76,7 @@ export const Table = (props: TableProps) => {
             <tr key={`row_${idx}`}>
                 {columns.map((col: TableColumn, cell: number) => {
                     return (
-                        <td key={`col_${idx}_${cell}`} align={col.align}>
+                        <td key={`col_${idx}_${cell}`} align={col.align} style={col.style}>
                             {col.renderer ? col.renderer(record, idx, cell) : record[col.dataIndex]}
                         </td>
                     );

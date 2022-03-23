@@ -1,0 +1,11 @@
+ul,
+li {
+  list-style: none;
+  text-indent: 1em;
+}
+
+li:not(:last-of-type) {
+  border-bottom: 1px solid #e6e6e6;
+}
+
+

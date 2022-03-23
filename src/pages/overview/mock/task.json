@@ -11,13 +11,13 @@
           "name": "林沛宣",
           "startTime": "2022/3/16",
           "endTime": "2022/3/21",
-          "progressRecord": ""
+          "status": "finished"
         },
         {
-          "name": "张锦怡",
+          "name": "林伯儒",
           "startTime": "2022/3/16",
           "endTime": "2022/3/21",
-          "progressRecord": ""
+          "status": "pending"
         }
       ]
     },
@@ -28,7 +28,79 @@
           "name": "董丹燕",
           "startTime": "2022/3/16",
           "endTime": "2022/3/21",
-          "progressRecord": ""
+          "status": "testing"
+        }
+      ]
+    }
+  ]
+},
+{
+  "name": "2022上海展会",
+  "requirements": "1、赵锐涛负责安排完成展会相关",
+  "deadline": "2022/3/31",
+  "leader": "赵锐涛",
+  "taskSlice": [
+    {
+      "describe": "摄像头视频流提供；",
+      "member": [
+        {
+          "name": "林沛宣",
+          "startTime": "2022/3/16",
+          "endTime": "2022/3/21",
+          "status": "finished"
+        },
+        {
+          "name": "林伯儒",
+          "startTime": "2022/3/16",
+          "endTime": "2022/3/21",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "describe": "展会系统实现、摄像头模块实现",
+      "member": [
+        {
+          "name": "董丹燕",
+          "startTime": "2022/3/16",
+          "endTime": "2022/3/21",
+          "status": "testing"
+        }
+      ]
+    }
+  ]
+},
+{
+  "name": "2022上海展会",
+  "requirements": "1、赵锐涛负责安排完成展会相关",
+  "deadline": "2022/3/31",
+  "leader": "赵锐涛",
+  "taskSlice": [
+    {
+      "describe": "摄像头视频流提供；",
+      "member": [
+        {
+          "name": "林沛宣",
+          "startTime": "2022/3/16",
+          "endTime": "2022/3/21",
+          "status": "finished"
+        },
+        {
+          "name": "林伯儒",
+          "startTime": "2022/3/16",
+          "endTime": "2022/3/21",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "describe": "展会系统实现、摄像头模块实现",
+      "member": [
+        {
+          "name": "董丹燕",
+          "startTime": "2022/3/16",
+          "endTime": "2022/3/21",
+          "status": "testing"
         }
       ]
     }

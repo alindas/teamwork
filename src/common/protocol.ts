@@ -1,4 +1,46 @@
 /**
+ * 概览区项目信息
+ */
+export interface Task {
+    /**
+     * 项目名
+     */
+    name: string,
+    /**
+     * 完成要求
+     */
+    requirements: string,
+    /**
+     * 完成时间
+     */
+    deadline: string,
+    /**
+     * 负责人
+     */
+    leader: string,
+    /**
+     * 细分任务描述
+     */
+    describe: string,
+    /**
+     * 成员
+     */
+    member: string,
+    /**
+     * 开始时间
+     */
+    startTime: string,
+    /**
+     * 完成时间
+     */
+    endTime: string,
+    /**
+     * 项目状态
+     */
+    status: string,
+}
+
+/**
  * 用户信息
  */
 export interface User {
@@ -203,11 +245,11 @@ export interface TaskBrief {
     /**
      * 所属项目
      */
-    proj: {id: number, name: string};
+    proj: { id: number, name: string };
     /**
      * 里程碑
      */
-    milestone: {id: number, name: string};
+    milestone: { id: number, name: string };
     /**
      * 是否置顶
      */
@@ -223,15 +265,15 @@ export interface TaskBrief {
     /**
      * 创建者/需求发起方
      */
-    creator: {id: number, name: string};
+    creator: { id: number, name: string };
     /**
      * 开发者/乙方
      */
-    developer: {id: number, name: string};
+    developer: { id: number, name: string };
     /**
      * 测试者/验收方
      */
-    tester: {id: number, name: string};
+    tester: { id: number, name: string };
     /**
      * 计划开始时间
      */
@@ -314,7 +356,7 @@ export interface Task {
     /**
      * 任务附件列表
      */
-    attachments?: {name: string, url: string}[];
+    attachments?: { name: string, url: string }[];
 
     /**
      * 评论
