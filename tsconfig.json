@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
         "module": "es2015",
-        "target": "es6",
+        "target": "es5",
         "jsx": "react",
         "allowJs": true,
         "noEmitOnError": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        // "esModuleInterop": true
     },
     "include": [
         "src/*",
