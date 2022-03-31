@@ -41,11 +41,11 @@ export const Home = () => {
     }, []);
 
     const fetchUserInfo = () => {
-        request({url: '/api/user', success: setUser, dontShowLoading: true});
+        request({url: '/api/user', success: setUser, showLoading: false});
     };
 
     const fetchNotices = () => {
-        request({url: '/api/notice/list', success: setNotices, dontShowLoading: true});
+        request({url: '/api/notice/list', success: setNotices, showLoading: false});
     };
 
     const openProfiler = () => {

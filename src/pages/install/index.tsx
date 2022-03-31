@@ -28,7 +28,7 @@ export const Install = () => {
         ev.preventDefault();
         if (step == 0) return;
         if (step <= 1) setDBInited(false);
-        setStep(prev => prev - 1); 
+        setStep(prev => prev - 1);
     };
 
     const goNext = () => {
@@ -62,7 +62,7 @@ export const Install = () => {
     const fetchDBStatus = () => {
         request({
             url: '/install/status',
-            dontShowLoading: true,
+            showLoading: false,
             success: (data: any) => {
                 setDBStatus(data.status);
                 if (data.done) {
@@ -91,7 +91,7 @@ export const Install = () => {
 
     const submitSuperUser = (ev: React.FormEvent<HTMLFormElement>) => {
         ev.preventDefault();
-        
+
         request({
             url: '/install/admin',
             method: 'POST',
@@ -112,7 +112,7 @@ export const Install = () => {
                                 <Form.Field htmlFor='name' label='站点名'>
                                     <Input name='name' value='Team管理系统'/>
                                 </Form.Field>
-                                
+
                                 <Form.Field htmlFor='port' label='服务端口号'>
                                     <Input name='port' value='8080'/>
                                 </Form.Field>

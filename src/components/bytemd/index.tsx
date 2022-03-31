@@ -10,8 +10,24 @@ import "highlight.js/styles/vs.css";
 import "github-markdown-css";
 
 import "./index.css";
+import { request } from '../../common/request';
 
-const plugins = [gfm({ locale: gfm_zh }), highlight(), mediumZoom()]
+const plugins = [gfm({ locale: gfm_zh }), highlight(), mediumZoom()];
+
+export const uploadForMarkdown = async (files: File[]) => {
+  const result: {title: string, url: string}[] = [];
+  for(let i = 0; i < files.length; i ++) {
+    let param = new FormData();
+    param.append('img', files[i], files[i].name);
+    let response = await request({ url: '/api/file/upload', method: 'POST', data: param, showLoading: false});
+    let res = await response.json();
+    result.push({
+      title: files[i].name,
+      url: res.data.url
+    });
+  }
+  return result;
+};
 
 export interface IMDEditor {
   content: string,
@@ -30,12 +46,7 @@ export function MDEditor(props: IMDEditor) {
       value={content}
       plugins={plugins}  //markdown中用到的插件，如表格、数学公式、流程图
       onChange={(v: any) => setContent(v)}
-      uploadImages={async (files: any) => {
-        return files.map((file: any) => ({
-          title: file.name,
-          url: URL.createObjectURL(file)
-        }));
-      }}
+      uploadImages={files => uploadForMarkdown(files)}
     />
   )
 }
