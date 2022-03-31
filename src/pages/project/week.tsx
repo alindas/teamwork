@@ -6,7 +6,7 @@ import { ProjectWeek } from '../../common/protocol';
 import { request } from '../../common/request';
 import { Viewer } from '../task/viewer';
 
-export const Weeks = (props: { pid: number, isAdmin: boolean, backOff: () => void  }) => {
+export const Weeks = (props: { pid: number, isAdmin: boolean }) => {
     const [week, setWeek] = React.useState<moment.Moment>(moment().startOf('week'));
     const [data, setData] = React.useState<ProjectWeek>({ archived: [], unarchived: [] });
 
@@ -26,11 +26,6 @@ export const Weeks = (props: { pid: number, isAdmin: boolean, backOff: () => voi
 
     return (
         <div className='m-2 fg-muted' style={{position: 'relative'}}>
-            <div style={{position: 'absolute', top: '5px', left: '5px'}}>
-                <Button theme='link' size='sm' onClick={props.backOff}>
-                    <Icon type='backward' />返回
-                </Button>
-            </div>
             <Row flex={{ justify: 'center', align: 'middle' }}>
                 <Icon style={{ fontSize: '2.5em' }} type='left-circle-fill' onClick={() => setWeek(moment(week).subtract(1, 'week'))} />
                 <div className='mx-3 text-center'>

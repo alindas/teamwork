@@ -9,8 +9,8 @@ import { Creator } from '../task/creator';
 import { Board } from '../task/board';
 import { Gantt } from '../task/gantt';
 
-export const Tasks = (props: { proj: Project, isAdmin: boolean, backOff: () => void }) => {
-    const { proj, isAdmin, backOff } = props;
+export const Tasks = (props: { proj: Project, isAdmin: boolean }) => {
+    const { proj, isAdmin } = props;
 
     const [isGantt, setIsGantt] = React.useState<boolean>(false);
     const [isFilterVisible, setFilterVisible] = React.useState<boolean>(false);
@@ -91,9 +91,6 @@ export const Tasks = (props: { proj: Project, isAdmin: boolean, backOff: () => v
         <div>
             <div style={{ padding: '0 8px', borderBottom: '1px solid #E2E2E2' }}>
                 <Row flex={{ align: 'middle' }}>
-                    <Button theme='link' size='sm' onClick={backOff}>
-                        <Icon type='backward' />返回
-                    </Button>
                     <Row flex={{ align: 'middle', justify: 'space-between' }} style={{flex: 1}}>
                         <label className='text-bold fg-muted' style={{ padding: "8px 0", fontSize: '1.2em' }}>{`【${proj.name}】任务列表`}</label>
                         <div>

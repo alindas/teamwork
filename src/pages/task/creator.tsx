@@ -57,7 +57,7 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
 
     const uploadForMarkdown = (file: File, done: (url: string) => void) => {
         let param = new FormData();
-        param.append('img', file, file.name);        
+        param.append('img', file, file.name);
         request({url: '/api/file/upload', method: 'POST', data: param, success: (data: any) => done(data.url)});
     };
 
@@ -83,7 +83,7 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
                                 <option value={-1}>无要求</option>
                                 {props.proj.milestones.map((m, i) => <option key={i} value={m.id}>{m.name}</option>)}
                             </Input.Select>
-                        )}                        
+                        )}
                     </Form.Field>
                 </Col>
                 <Col span={{xs: 2}}>
@@ -97,14 +97,14 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
 
             <Row space={8}>
                 <Col span={{xs: 4}}>
-                    <Form.Field 
-                        htmlFor='creator' 
+                    <Form.Field
+                        htmlFor='creator'
                         label={
-                            <Input.Checkbox 
-                                style={{fontSize: 12}} 
-                                label='指定负责人' 
-                                value='1' 
-                                checked={canModifyCreator} 
+                            <Input.Checkbox
+                                style={{fontSize: 12}}
+                                label='指定负责人'
+                                value='1'
+                                checked={canModifyCreator}
                                 onChange={b => setCanModifyCreator(b)}/>
                         }>
                         <Input.Select name='creator' value={initCreator} disabled={!canModifyCreator}>
@@ -175,7 +175,7 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
                         <Input.DatePicker name='endTime' mode='date' value={moment().add(1, 'd').format('YYYY-MM-DD')}/>
                     </Form.Field>
                 </Col>
-                
+
                 <Col span={{xs: 4}}/>
             </Row>
 

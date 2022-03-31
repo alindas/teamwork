@@ -29,7 +29,7 @@ export const Menu = (props: MenuProps) => {
 
     const context: MenuContextData = {
         menuId: menuId,
-        submenuMode: mode || 'vertical', 
+        submenuMode: mode || 'vertical',
         getActiveMenuItem: () => activeItem,
         setActiveMenuItem: (k: string) => setActiveItem(k),
     };
@@ -39,7 +39,7 @@ export const Menu = (props: MenuProps) => {
 
         return React.Children.map(children, (child: any, idx: number) : React.ReactNode => {
             if (!child || !child.type) return child;
-            
+
             const type = child.type;
             if (type.isSubMenu) {
                 return makeSubMenu(child);

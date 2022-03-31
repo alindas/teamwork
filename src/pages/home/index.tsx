@@ -12,11 +12,11 @@ import {SharePage} from '../share';
 import {AdminPage} from '../admin';
 import OverviewPage from '../overview';
 
-interface MainMenu {
+export interface MainMenu {
     name: string;
     id: string;
-    icon: string;
     click: () => void;
+    icon?: string;
     needAdmin?: boolean;
 };
 

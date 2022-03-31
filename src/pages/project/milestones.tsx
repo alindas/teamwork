@@ -28,7 +28,7 @@ interface ViewMilestone {
     summary: MilestoneChartElement[];
 }
 
-export const Milestones = (props: { proj: Project, isAdmin: boolean, backOff: () => void }) => {
+export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
     const [milestones, setMilestones] = React.useState<ProjectMilestone[]>([]);
     const [view, setView] = React.useState<ViewMilestone>();
 
@@ -195,9 +195,6 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean, backOff: ()
                                 <Icon type='idcard' className='mr-1' />里程计划
                             </label>
                             <Row>
-                                <Button theme='link' size='sm' onClick={props.backOff}>
-                                    <Icon type='backward' />返回
-                                </Button>
                                 <Button size='xs' theme='link' onClick={addMilestone}><Icon type='plus' className='mr-1' />新建里程碑</Button>
                             </Row>
                         </Row>
@@ -206,9 +203,6 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean, backOff: ()
                             <label className='text-bold fg-muted' style={{ fontSize: '1.2em' }}>
                                 <Icon type='idcard' className='mr-1' />里程计划
                             </label>
-                            <Button theme='link' size='sm' onClick={props.backOff}>
-                                <Icon type='backward' />返回
-                            </Button>
                         </>
                     )}
                 </div>

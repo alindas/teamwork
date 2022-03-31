@@ -5,8 +5,7 @@ import { Project, ProjectSummary } from '../../common/protocol';
 import { request } from '../../common/request';
 import { MDEditor, MDViewer } from '../../components/bytemd';
 
-
-export const Summary = (props: { proj: Project, isAdmin: boolean, backOff: () => void }) => {
+export const Summary = (props: { proj: Project, isAdmin: boolean }) => {
     const [summary, setSummary] = React.useState<ProjectSummary>(null);
     const [isEditingDesc, setEditingDesc] = React.useState<boolean>(false);
 
@@ -23,15 +22,11 @@ export const Summary = (props: { proj: Project, isAdmin: boolean, backOff: () =>
 
     return !summary ? null : (
         <div>
-            <div style={{ padding: '8px 0', borderBottom: '1px solid #e2e2e2' }}>
-                <Button theme='link' size='sm' onClick={props.backOff}>
-                    <Icon type='backward' />返回
-                </Button>
+            <div style={{ padding: '8px 16px', borderBottom: '1px solid #e2e2e2' }}>
                 <label className='text-bold fg-muted' style={{ fontSize: '1.2em' }}>
                     <Icon type='pie-chart' className='mr-1' />【{props.proj.name}】概览
                 </label>
             </div>
-
             <div className='px-3 py-2'>
                 <p style={{ fontSize: 15, fontWeight: 'bolder' }}>
                     简介
@@ -40,7 +35,7 @@ export const Summary = (props: { proj: Project, isAdmin: boolean, backOff: () =>
                 <div className='p-2'>
                     {isEditingDesc
                         ? <Summary.DescEditor pid={props.proj.id} desc={summary.desc} onCancel={() => setEditingDesc(false)} onModified={fetchSummary} />
-                        : <MDViewer content={summary.desc || '管理员很懒，并没写什么描述'}/>}
+                        : <MDViewer content={summary.desc || '管理员很懒，并没写什么描述'} />}
                 </div>
 
                 <p style={{ marginTop: 8, fontSize: 15, fontWeight: 'bolder' }}>

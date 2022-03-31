@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { useEffect, useState } from 'react';
 import { Layout, Icon, Menu, Empty, Badge, Row, Button, FormProxy, FormFieldValidator, Modal, Form, Input, Col, Card } from '../../components';
 import { Project } from '../../common/protocol';
 import { request } from '../../common/request';
@@ -30,11 +31,11 @@ const ColorPool = [
 ]
 
 export const ProjectPage = (props: { uid: number }) => {
-    const [projs, setProjs] = React.useState<Project[]>([]);
-    const [page, setPage] = React.useState<JSX.Element>();
-    const [ifShowCartoon, setIfShowCartoon] = React.useState(false);
+    const [projs, setProjs] = useState<Project[]>([]);
+    const [page, setPage] = useState<JSX.Element>();
+    const [currentProject, setCurrentProject] = useState<{ project: Project, isAdmin: boolean, index: number }>({ project: null, isAdmin: false, index: -1 });
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetchProjs();
     }, []);
 
@@ -92,11 +93,12 @@ export const ProjectPage = (props: { uid: number }) => {
 
     const backOff = () => {
         setPage(null);
-        setIfShowCartoon(true);
+        console.log('tag1');
+
     }
 
     const projectList = projs.length == 0 ? <Empty label='您还未加入任何项目' /> : (
-        <Row space={8} style={{ padding: '10px 20px' }} className={ifShowCartoon ? 'fill-in' : ''}>
+        <Row space={8} style={{ padding: '10px 20px' }}>
             {projs.map((project, i) => {
                 const target = project.members.find(member => member.user.id == props.uid);
                 let isAdmin = target !== undefined ? target.isAdmin : false;
@@ -122,11 +124,11 @@ export const ProjectPage = (props: { uid: number }) => {
                                 flex={{ justify: 'space-between' }}
                                 className='cloak'
                             >
-                                <div onClick={() => setPage(<Summary proj={project} isAdmin={isAdmin} backOff={backOff}/>)}><span>项目概览</span></div>
-                                <div onClick={() => setPage(<Tasks proj={project} isAdmin={isAdmin} backOff={backOff} />)}><span>任务列表</span></div>
-                                <div onClick={() => setPage(<Milestones proj={project} isAdmin={isAdmin} backOff={backOff} />)}><span>里程计划</span></div>
-                                <div onClick={() => setPage(<Weeks pid={project.id} isAdmin={isAdmin} backOff={backOff} />)}><span>周报统计</span></div>
-                                {isAdmin && <div onClick={() => setPage(<Manager pid={project.id} onDelete={fetchProjs} backOff={backOff} />)}><span>项目管理</span></div>}
+                                <div onClick={() => { setPage(<Summary proj={project} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 1 }) }}><span>项目概览</span></div>
+                                <div onClick={() => { setPage(<Tasks proj={project} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 2 }) }}><span>任务列表</span></div>
+                                <div onClick={() => { setPage(<Milestones proj={project} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 3 }) }}><span>里程计划</span></div>
+                                <div onClick={() => { setPage(<Weeks pid={project.id} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 4 }) }}><span>周报统计</span></div>
+                                {isAdmin && <div onClick={() => { setPage(<Manager pid={project.id} onDelete={fetchProjs} />); setCurrentProject({ project, isAdmin, index: 5 }) }}><span>项目管理</span></div>}
                             </Row>
                         </Card>
                     </Col>
@@ -139,11 +141,29 @@ export const ProjectPage = (props: { uid: number }) => {
         <Layout style={{ width: '100%', height: '100%' }}>
             <div style={!!page ? { height: 0 } : {}} className='project-header'>
                 <Row flex={{ align: 'middle' }}>
-                    <label className='text-bold fg-muted' style={{ padding: '8px 0', fontSize: '1.2em' }}><Icon type='pie-chart' className='mr-2' />项目列表</label>
+                    <label className='text-bold fg-muted' style={{ padding: '8px 16px', fontSize: '1.2em' }}><Icon type='pie-chart' className='mr-2' />项目列表</label>
                     <Button theme='link' size='sm' onClick={addProj}>
                         <Icon type='plus' className='mr-1' />新建
                     </Button>
                 </Row>
+            </div>
+            <div style={!!page ? {} : { height: 0 }} className='project-submenu'>
+                <Button theme='link' size='sm' onClick={backOff}>
+                    <Icon type='backward' />返回
+                </Button>
+                {
+                    currentProject.project !== null &&
+                    <Row
+                        flex={{ justify: 'space-between' }}
+                        className={`project-submenu-box current-submenu-${currentProject.index}`}
+                    >
+                        <div onClick={() => { setPage(<Summary proj={currentProject.project} isAdmin={currentProject.isAdmin} />); setCurrentProject({ ...currentProject, index: 1 }) } }><span>项目概览</span></div>
+                        <div onClick={() => { setPage(<Tasks proj={currentProject.project} isAdmin={currentProject.isAdmin} />); setCurrentProject({ ...currentProject, index: 2 })} }><span>任务列表</span></div>
+                        <div onClick={() => { setPage(<Milestones proj={currentProject.project} isAdmin={currentProject.isAdmin} />); setCurrentProject({ ...currentProject, index: 3 })} }><span>里程计划</span></div>
+                        <div onClick={() => { setPage(<Weeks pid={currentProject.project.id} isAdmin={currentProject.isAdmin} />); setCurrentProject({ ...currentProject, index: 4 })} }><span>周报统计</span></div>
+                        {currentProject.isAdmin && <div onClick={() => { setPage(<Manager pid={currentProject.project.id} onDelete={fetchProjs} />); setCurrentProject({ ...currentProject, index: 5 })} }><span>项目管理</span></div>}
+                    </Row>
+                }
             </div>
             <Layout.Content>
                 {page || projectList}
