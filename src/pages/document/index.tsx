@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import {Icon, Layout, Markdown, Tree, TreeNode, TreeNodeAction, Modal, Input, Badge, Notification, Button, Row} from '../../components';
+import {Icon, Layout, Tree, TreeNode, TreeNodeAction, Modal, Input, Badge, Notification, Button, Row} from '../../components';
 import {Document} from '../../common/protocol';
 import {request} from '../../common/request';
+import { MDEditor, MDViewer } from '../../components/bytemd';
 
 export const DocumentPage = () => {
     const [nodes, setNodes] = React.useState<TreeNode[]>([]);
@@ -72,7 +73,7 @@ export const DocumentPage = () => {
 
     const isValidName = (name: string) => {
         if (!name || name.length == 0) return {ok: false, err: '文档名不可为空'};
-        
+
         const findNodeByName = (list: TreeNode[]) => {
             for (let i = 0; i < list.length; ++i) {
                 if (list[i].label == name) return true;
@@ -92,7 +93,7 @@ export const DocumentPage = () => {
         const finder = (list: TreeNode[]) : TreeNode => {
             for (let i = 0; i < list.length; ++i) {
                 if (list[i].data.id == id) return list[i];
-                
+
                 let sub = finder(list[i].children);
                 if (sub) return sub;
             }
@@ -121,7 +122,7 @@ export const DocumentPage = () => {
                             <td>文档名：</td>
                             <td><Input value={name} onChange={ev => name = ev}/></td>
                         </tr>
-                    </tbody>                    
+                    </tbody>
                 </table>
             ),
             onOk: () => {
@@ -155,7 +156,7 @@ export const DocumentPage = () => {
                             <td>新名称：</td>
                             <td><Input value={name} onChange={ev => name = ev}/></td>
                         </tr>
-                    </tbody>                    
+                    </tbody>
                 </table>
             ),
             onOk: () => {
@@ -193,7 +194,7 @@ export const DocumentPage = () => {
 
     const uploadForMarkdown = (file: File, done: (url: string) => void) => {
         let param = new FormData();
-        param.append('img', file, file.name);        
+        param.append('img', file, file.name);
         request({url: '/api/file/upload', method: 'POST', data: param, success: (data: any) => done(data.url)});
     };
 
@@ -212,15 +213,15 @@ export const DocumentPage = () => {
             <Layout.Content>
                 {isEditing?(
                     <div className='mt-3 px-1'>
-                        <Markdown.Editor value={editContent} onChange={v => setEditContent(v)} height='calc(100vh - 100px)' onUpload={uploadForMarkdown}/>
+                        <MDEditor content={editContent} setContent={setEditContent} />
                         <Row flex={{align: 'middle', justify: 'center'}}>
-                            <Button theme='primary' size='sm' onClick={editDoc}>修改</Button>
+                            <Button theme='primary' size='sm' onClick={editDoc}>保存修改</Button>
                             <Button theme='default' size='sm' onClick={() => setEditing(false)}>取消</Button>
                         </Row>
                     </div>
                 ):(
                     <div className='mt-3 px-2'>
-                        {current&&<Markdown.Renderer source={current.content}/>}
+                        {current&&<MDViewer content={current.content}/>}
                     </div>
                 )}
             </Layout.Content>

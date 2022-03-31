@@ -1,0 +1,8 @@
+.bytemd {
+  height: 88vh;
+}
+
+/* 去除 github 仓库图标的展示 */
+.bytemd-toolbar-right > div[bytemd-tippy-path="5"] {
+  display: none;
+}

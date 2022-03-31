@@ -1,10 +1,11 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
-import {Avatar, Button, Drawer, Row, Badge, Icon, Markdown, Tab, Timeline, Modal, Form, Input, Notification, Dropdown, Menu} from '../../components';
+import {Avatar, Button, Drawer, Row, Badge, Icon, Tab, Timeline, Modal, Form, Input, Notification, Dropdown, Menu} from '../../components';
 import {Task, TaskEvent} from '../../common/protocol';
 import {TaskStatus, TaskWeight, ProjectRole} from '../../common/consts';
 import {request} from '../../common/request';
+import { MDEditor, MDViewer } from '../../components/bytemd';
 
 const makeTaskEvent = (ev: TaskEvent) => {
     let desc = '';
@@ -56,7 +57,7 @@ const TaskDetailReadOnly = (props: {task: Task}) => {
             <div className='divider-h my-1'/>
 
             <div className='mt-3 mx-3' style={{minHeight: 300}}>
-                <Markdown.Renderer source={task.content}/>
+                <MDViewer content={task.content}/>
             </div>
 
             {task.attachments.length > 0 && (
@@ -74,7 +75,7 @@ const TaskDetailReadOnly = (props: {task: Task}) => {
                                 <Avatar src={c.avatar} size={32} className='mt-1'/>
                                 <div className='ml-2' style={{flex: 1}}>
                                     <p style={{fontSize: 12, marginBottom: 4}}><span>{c.user}</span><span className='ml-3' style={{color: '#ccc'}} title={c.time}>{moment(c.time).fromNow()}</span></p>
-                                    <Markdown.Renderer source={c.content}/>
+                                    <MDViewer content={c.content}/>
                                 </div>
                             </Row>
                         ))}
@@ -174,7 +175,7 @@ const TaskDetail = (props: {task: Task; closer: () => void; onModified: () => vo
             <div className='mt-3 mx-3' style={{minHeight: 300}}>
                 {isContentEditorShow
                     ?<TaskDetail.ContentEditor task={task} onCancel={() => setContentEditorShow(false)} onModified={() => setDirty(true)}/>
-                    :<Markdown.Renderer source={task.content}/>}
+                    :<MDViewer content={task.content}/> }
             </div>
 
             {task.attachments.length > 0 && (
@@ -192,7 +193,7 @@ const TaskDetail = (props: {task: Task; closer: () => void; onModified: () => vo
                                 <Avatar src={c.avatar} size={32} className='mt-1'/>
                                 <div className='ml-2' style={{flex: 1}}>
                                     <p style={{fontSize: 12, marginBottom: 4}}><span>{c.user}</span><span className='ml-3' style={{color: '#ccc'}} title={c.time}>{moment(c.time).fromNow()}</span></p>
-                                    <Markdown.Renderer source={c.content}/>
+                                    <MDViewer content={task.content}/>
                                 </div>
                             </Row>
                         ))}
@@ -351,7 +352,7 @@ TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified
 
     return (
         <div>
-            <Markdown.Editor value={content} onChange={setContent} rows={12} onUpload={uploader}/>
+            <MDEditor content={content} setContent={setContent} />
             <div className='mt-2 center-child'>
                 <Button theme='primary' size='sm' onClick={modify}>修改</Button>
                 <Button size='sm' onClick={props.onCancel}>取消</Button>
@@ -395,7 +396,7 @@ TaskDetail.CommentEditor = (props: {task: Task, onCancel: () => void, onModified
             <div className='divider-h mt-1'/>
 
             <div className='p-2'>
-                <Markdown.Editor value={content} onChange={setContent} rows={4} onUpload={uploader}/>
+                <MDEditor content={content} setContent={setContent} />
                 <div className='mt-1 center-child'>
                     <Button theme='primary' size='sm' onClick={modify}>发表</Button>
                     <Button size='sm' onClick={props.onCancel}>取消</Button>
