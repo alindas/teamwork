@@ -73,12 +73,6 @@ export const Summary = (props: { proj: Project, isAdmin: boolean }) => {
 Summary.DescEditor = (props: { pid: number, desc: string, onCancel: () => void, onModified: () => void }) => {
     const [content, setContent] = React.useState<string>(props.desc || '');
 
-    const uploader = (file: File, done: (url: string) => void) => {
-        let param = new FormData();
-        param.append('img', file, file.name);
-        request({ url: '/api/file/upload', method: 'POST', data: param, success: (data: any) => done(data.url) })
-    };
-
     const modify = () => {
         if (props.desc == content) {
             props.onCancel();
@@ -100,7 +94,9 @@ Summary.DescEditor = (props: { pid: number, desc: string, onCancel: () => void, 
 
     return (
         <div>
-            <MDEditor content={content} setContent={setContent} />
+            <div style={{width: '50%', height: '300px'}}>
+                <MDEditor content={content} setContent={setContent} />
+            </div>
             <div className='mt-2 center-child'>
                 <Button theme='primary' size='sm' onClick={modify}>修改</Button>
                 <Button size='sm' onClick={props.onCancel}>取消</Button>
