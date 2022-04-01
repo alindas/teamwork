@@ -27,7 +27,6 @@ module.exports = {
       // "crypto-browserify": require.resolve('crypto-browserify'),
     }
   },
-  //  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -66,11 +65,12 @@ module.exports = {
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale/, /en\.js/),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: './public/index.html',
+      favicon: path.resolve(__dirname, 'public/favicon.ico')
     }),
   ],
   devServer: {
-    static: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'public'),
     proxy: {
       "/api": {
         target: "http://8.134.69.146:8080",
