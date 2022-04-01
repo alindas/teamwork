@@ -1,5 +1,6 @@
+/* 将编辑器的宽高设定放在具体页面下 */
 .bytemd {
-  height: 88vh;
+  /* height: 88vh; */
 }
 
 /* 去除 github 仓库图标的展示 */

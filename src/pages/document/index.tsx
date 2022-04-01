@@ -4,6 +4,7 @@ import {Icon, Layout, Tree, TreeNode, TreeNodeAction, Modal, Input, Badge, Notif
 import {Document} from '../../common/protocol';
 import {request} from '../../common/request';
 import { MDEditor, MDViewer } from '../../components/bytemd';
+import './index.css';
 
 export const DocumentPage = () => {
     const [nodes, setNodes] = React.useState<TreeNode[]>([]);
@@ -212,7 +213,7 @@ export const DocumentPage = () => {
 
             <Layout.Content>
                 {isEditing?(
-                    <div className='mt-3 px-1'>
+                    <div className='mt-3 px-1 document-editor'>
                         <MDEditor content={editContent} setContent={setEditContent} />
                         <Row flex={{align: 'middle', justify: 'center'}}>
                             <Button theme='primary' size='sm' onClick={editDoc}>保存修改</Button>
