@@ -93,8 +93,6 @@ export const ProjectPage = (props: { uid: number }) => {
 
     const backOff = () => {
         setPage(null);
-        console.log('tag1');
-
     }
 
     const projectList = projs.length == 0 ? <Empty label='您还未加入任何项目' /> : (
