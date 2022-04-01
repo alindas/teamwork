@@ -30,12 +30,12 @@ export const uploadForMarkdown = async (files: File[]) => {
 };
 
 export interface IMDEditor {
-  content: string,
-  setContent: (value: any) => void
+  content?: string,
+  setContent?: (value: any) => void
 }
 
 export interface IMDViewer {
-  content: string
+  content?: string
 }
 
 export function MDEditor(props: IMDEditor) {
@@ -43,9 +43,9 @@ export function MDEditor(props: IMDEditor) {
   return (
     <Editor
       locale={zhHans}
-      value={content}
+      value={content || ''}
       plugins={plugins}  //markdown中用到的插件，如表格、数学公式、流程图
-      onChange={(v: any) => setContent(v)}
+      onChange={(v: any) => setContent && setContent(v)}
       uploadImages={files => uploadForMarkdown(files)}
     />
   )
@@ -54,7 +54,7 @@ export function MDEditor(props: IMDEditor) {
 export function MDViewer(props: IMDViewer) {
   return (
     <Viewer
-      value={props.content}
+      value={props.content || ''}
       plugins={plugins}
     />
   )

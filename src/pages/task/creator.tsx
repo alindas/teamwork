@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import * as moment from 'moment';
 
 import {Button, Col, Form, Icon, Input, Row, Notification} from '../../components';
@@ -9,13 +9,14 @@ import {request} from '../../common/request';
 import { MDEditor } from '../../components/bytemd';
 
 export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onDone: () => void}) => {
-    const [canModifyCreator, setCanModifyCreator] = React.useState<boolean>(false);
-    const [history, setHistory] = React.useState<CreateTaskHistory>(new CreateTaskHistory());
-    const [initCreator, setInitCreator] = React.useState<number>(undefined);
-    const [initDeveloper, setInitDeveloper] = React.useState<number>(undefined);
-    const [initTester, setInitTester] = React.useState<number>(undefined);
+    const [canModifyCreator, setCanModifyCreator] = useState<boolean>(false);
+    const [history, setHistory] = useState<CreateTaskHistory>(new CreateTaskHistory());
+    const [initCreator, setInitCreator] = useState<number>(undefined);
+    const [initDeveloper, setInitDeveloper] = useState<number>(undefined);
+    const [initTester, setInitTester] = useState<number>(undefined);
+    const [editContent, setEditContent] = useState<string>('');
 
-    React.useEffect(() => {
+    useEffect(() => {
         let his = CreateTaskHistory.load(props.proj);
         setHistory(his);
         setInitCreator(his.creators.length>0?his.creators[0].user.id:undefined);
@@ -175,8 +176,8 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
             </Row>
 
             <Form.Field htmlFor='content' label='任务描述'>
-                {/* <Markdown.Editor name='content' rows={10} onUpload={uploadForMarkdown}/> */}
-                <MDEditor />
+                <textarea name='content' defaultValue={editContent} hidden/>
+                <MDEditor content={editContent} setContent={setEditContent}/>
             </Form.Field>
 
             <Form.Field>
