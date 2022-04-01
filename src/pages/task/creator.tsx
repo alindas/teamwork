@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
-import {Button, Col, Form, Icon, Input, Markdown, Row, Notification} from '../../components';
+import {Button, Col, Form, Icon, Input, Row, Notification} from '../../components';
 import {TaskWeight, ProjectRole} from '../../common/consts';
 import {Project, ProjectMilestone} from '../../common/protocol';
 import {CreateTaskHistory} from '../../common/storage';
 import {request} from '../../common/request';
+import { MDEditor } from '../../components/bytemd';
 
 export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onDone: () => void}) => {
     const [canModifyCreator, setCanModifyCreator] = React.useState<boolean>(false);
@@ -55,15 +56,9 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
         })
     };
 
-    const uploadForMarkdown = (file: File, done: (url: string) => void) => {
-        let param = new FormData();
-        param.append('img', file, file.name);
-        request({url: '/api/file/upload', method: 'POST', data: param, success: (data: any) => done(data.url)});
-    };
-
     return (
         <Form form={form} onSubmit={handleSubmit}>
-            <input name='pid' value={props.proj.id} hidden/>
+            <input name='pid' defaultValue={props.proj.id} hidden/>
 
             <Row space={8}>
                 <Col span={{xs: 8}}>
@@ -180,7 +175,8 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
             </Row>
 
             <Form.Field htmlFor='content' label='任务描述'>
-                <Markdown.Editor name='content' rows={10} onUpload={uploadForMarkdown}/>
+                {/* <Markdown.Editor name='content' rows={10} onUpload={uploadForMarkdown}/> */}
+                <MDEditor />
             </Form.Field>
 
             <Form.Field>
