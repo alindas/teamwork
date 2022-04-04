@@ -1,108 +1,90 @@
-[{
-  "name": "2022上海展会",
-  "requirements": "1、赵锐涛负责安排完成展会相关",
-  "deadline": "2022/3/31",
-  "leader": "赵锐涛",
-  "taskSlice": [
-    {
-      "describe": "摄像头视频流提供；",
-      "member": [
-        {
-          "name": "林沛宣",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "pending"
-        },
-        {
-          "name": "林伯儒",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "developing"
-        }
-      ]
-    },
-    {
-      "describe": "展会系统实现、摄像头模块实现",
-      "member": [
-        {
-          "name": "董丹燕",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "finished"
-        }
-      ]
-    }
-  ]
-},
-{
-  "name": "2022上海展会",
-  "requirements": "1、赵锐涛负责安排完成展会相关",
-  "deadline": "2022/3/31",
-  "leader": "赵锐涛",
-  "taskSlice": [
-    {
-      "describe": "完成第一阶段测试用例验证及问题整改，包括但不限于\r碰撞速度测试\r各种断网重连测试\r稳定性测试\r网络不稳定情况测试\r输出测试报告",
-      "member": [
-        {
-          "name": "林沛宣",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "testing"
-        },
-        {
-          "name": "林伯儒",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "pending"
-        }
-      ]
-    },
-    {
-      "describe": "展会系统实现、摄像头模块实现",
-      "member": [
-        {
-          "name": "董丹燕",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "testing"
-        }
-      ]
-    }
-  ]
-},
-{
-  "name": "2022上海展会",
-  "requirements": "1、赵锐涛负责安排完成展会相关",
-  "deadline": "2022/3/31",
-  "leader": "赵锐涛",
-  "taskSlice": [
-    {
-      "describe": "摄像头视频流提供；",
-      "member": [
-        {
-          "name": "林沛宣",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "finished"
-        },
-        {
-          "name": "林伯儒",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "pending"
-        }
-      ]
-    },
-    {
-      "describe": "展会系统实现、摄像头模块实现",
-      "member": [
-        {
-          "name": "董丹燕",
-          "startTime": "2022/3/16",
-          "endTime": "2022/3/21",
-          "status": "testing"
-        }
-      ]
-    }
-  ]
-}]
+[
+  {
+    "name": "2022上海展会",
+    "requirements": "1、赵锐涛负责安排完成展会相关",
+    "deadline": "2022/3/31",
+    "leader": "赵锐涛",
+    "taskSlice": [
+      {
+        "describe": "摄像头视频流提供；",
+        "member": "林沛宣",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "pending"
+      },
+      {
+        "describe": "摄像头视频流提供；",
+        "member": "林沛宣",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "developing"
+      }
+    ]
+  },
+  {
+    "name": "2022上海展会",
+    "requirements": "1、赵锐涛负责安排完成展会相关",
+    "deadline": "2022/3/31",
+    "leader": "赵锐涛",
+    "taskSlice": [
+      {
+        "describe": "摄像头视频流提供；",
+        "member": "林沛宣",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "finished"
+      },
+      {
+        "describe": "摄像头视频流提供；",
+        "member": "林沛宣",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "testing"
+      }
+    ]
+  },
+  {
+    "name": "2022上海展会",
+    "requirements": "1、赵锐涛负责安排完成展会相关",
+    "deadline": "2022/3/31",
+    "leader": "赵锐涛",
+    "taskSlice": [
+      {
+        "describe": "摄像头视频流提供；",
+        "member": "林沛宣",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "pending"
+      },
+      {
+        "describe": "摄像头视频流提供；",
+        "member": "林沛宣",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "name": "2022上海展会",
+    "requirements": "1、赵锐涛负责安排完成展会相关",
+    "deadline": "2022/3/31",
+    "leader": "赵锐涛",
+    "taskSlice": [
+      {
+        "describe": "完成第一阶段测试用例验证及问题整改，包括但不限于\n碰撞速度测试\n各种断网重连测试\n稳定性测试\n网络不稳定情况测试\n输出测试报告",
+        "member": "林伯儒",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "pending"
+      },
+      {
+        "describe": "完成第一阶段测试用例验证及问题整改，包括但不限于\n碰撞速度测试\n各种断网重连测试\n稳定性测试\n网络不稳定情况测试\n输出测试报告",
+        "member": "林伯儒",
+        "startTime": "2022/3/16",
+        "endTime": "2022/3/21",
+        "status": "pending"
+      }
+    ]
+  }
+]

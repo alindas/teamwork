@@ -30,13 +30,38 @@ export default function overview() {
   const taskSchema: TableColumn[] = [
     { label: '项目', dataIndex: 'name' },
     { label: '完成要求', dataIndex: 'requirements'},
-    { label: '完成时间', dataIndex: 'deadline' },
+    { label: '完成时间', dataIndex: 'deadline', style: {wordBreak: 'break-all'} },
     { label: '负责人', dataIndex: 'leader' },
-    { label: '细分任务', dataIndex: 'describe', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'describe'), style: {padding: 0} },
-    { label: '开始时间', dataIndex: 'startTime', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'startTime'), style: {padding: 0} },
-    { label: '完成时间', dataIndex: 'endTime', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'endTime'), style: {padding: 0} },
-    { label: '成员', dataIndex: 'member', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'name'), style: {padding: 0} },
-    { label: '项目状态', dataIndex: 'status', renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'status'), style: {padding: 0} },
+    {
+      label: '细分任务',
+      dataIndex: 'describe',
+      renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'describe'),
+      style: {padding: 0}
+    },
+    {
+      label: '开始时间',
+      dataIndex: 'startTime',
+      renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'startTime'),
+      style: {padding: 0}
+    },
+    {
+      label: '完成时间',
+      dataIndex: 'endTime',
+      renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'endTime'),
+      style: {padding: 0}
+    },
+    {
+      label: '成员',
+      dataIndex: 'member',
+      renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'member'),
+      style: {padding: 0}
+    },
+    {
+      label: '项目状态',
+      dataIndex: 'status',
+      renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'status'),
+      style: {padding: 0}
+    },
   ];
 
   useEffect(() => {
@@ -66,7 +91,7 @@ export default function overview() {
     return (
       <ul>
         { record.map((task: any, i: number) =>
-          <li key={i} style={{lineHeight: key == 'describe' ? `${28 * task.member.length}px` : '28px'} }>
+          <li key={i} >
             { task[key] ? (key == 'status' ? translateProjectStatus(task[key]) : task[key]) : renderTable(task.member, key) }
           </li>
         )}
