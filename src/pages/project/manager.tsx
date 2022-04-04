@@ -161,6 +161,16 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
         });
     };
 
+    const archiveProj = () => {
+        Modal.open({
+            title: '归档确认',
+            body: <div className='my-2'>请再次确认：要归档项目【{proj.name}】吗？</div>,
+            onOk: () => {
+                request({ url: `/api/project/${proj.id}/dump`, method: 'PUT', success: props.onDelete });
+            }
+        });
+    }
+
     return (
         <div style={{margin: '.5rem 1.5rem'}}>
             <Card
@@ -214,11 +224,20 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
                     <Row flex={{ align: 'middle', justify: 'space-between' }}>
                         <div>
                             <p className='text-bold'>删除本项目</p>
-                            <p>删除项目操作不可恢复，请三思而后行！！！</p>
+                            <p>该操作不可恢复，请三思而后行！！！</p>
                         </div>
 
-                        <Button theme='danger' onClick={() => { }}>归档项目</Button>
                         <Button theme='danger' onClick={delProj}>确认删除</Button>
+                    </Row>
+                </Card>
+                <Card className='m-2'>
+                    <Row flex={{ align: 'middle', justify: 'space-between' }}>
+                        <div>
+                            <p className='text-bold'>归档本项目</p>
+                            <p>该操作会将项目划为完成状态</p>
+                        </div>
+
+                        <Button theme='danger' onClick={archiveProj}>归档项目</Button>
                     </Row>
                 </Card>
             </Card>
