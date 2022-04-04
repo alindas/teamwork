@@ -1,18 +1,18 @@
 import * as React from 'react';
 import * as moment from 'moment';
-
 import * as echarts from 'echarts/lib/echarts';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/chart/pie';
 
-import { FormProxy, FormFieldValidator, Modal, Form, Input, Card, Icon, Button, Timeline, Markdown, Layout, Empty, Badge, Row, Drawer } from '../../components';
+import { FormProxy, FormFieldValidator, Modal, Form, Input, Card, Icon, Button, Timeline, Layout, Empty, Badge, Row, Drawer } from '../../components';
 import { ProjectMilestone, TaskBrief, Project } from '../../common/protocol';
 import { request } from '../../common/request';
 import { TaskStatus } from '../../common/consts';
 import { Viewer } from '../task/viewer';
 import { Creator } from '../task/creator';
+import { MDEditor, MDViewer } from '../../components/bytemd';
 
 interface MilestoneChartElement {
     state: number;
@@ -31,6 +31,7 @@ interface ViewMilestone {
 export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
     const [milestones, setMilestones] = React.useState<ProjectMilestone[]>([]);
     const [view, setView] = React.useState<ViewMilestone>();
+    const [desc, setDesc] = React.useState('');
 
     const validator: { [k: string]: FormFieldValidator } = {
         name: { required: '里程碑名称不可为空' },
@@ -98,7 +99,9 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                         <Input.DatePicker name='endTime' mode='date' value={moment().add(1, 'd').format('YYYY-MM-DD')} />
                     </Form.Field>
                     <Form.Field htmlFor='desc' label='描述'>
-                        <Markdown.Editor name='desc' rows={10} onUpload={uploadForDesc} />
+                        <textarea name='desc' defaultValue={desc} hidden/>
+                        <MDEditor content={desc} setContent={setDesc}/>
+                        {/* <Markdown.Editor name='desc' rows={10} onUpload={uploadForDesc} /> */}
                     </Form.Field>
                 </Form>
             ),
@@ -134,7 +137,9 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                         <Input.DatePicker name='endTime' mode='date' value={m.endTime} />
                     </Form.Field>
                     <Form.Field htmlFor='desc' label='描述'>
-                        <Markdown.Editor name='desc' rows={10} value={m.desc} onUpload={uploadForDesc} />
+                        <textarea name='desc' defaultValue={desc} hidden/>
+                        <MDEditor content={desc} setContent={setDesc}/>
+                        {/* <Markdown.Editor name='desc' rows={10} value={m.desc} onUpload={uploadForDesc} /> */}
                     </Form.Field>
                 </Form>
             ),
@@ -253,7 +258,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                         <div className='divider-h pt-2' />
 
                         <div className='py-2'>
-                            <Markdown.Renderer source={view.target.desc || '管理员很懒，并没写什么描述'} />
+                            <MDViewer content={view.target.desc || '管理员很懒，并没写什么描述'}/>
                         </div>
 
                         <p className='mt-2' style={{ fontSize: 15, fontWeight: 'bolder' }}>时间节点</p>
