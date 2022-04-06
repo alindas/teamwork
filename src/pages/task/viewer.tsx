@@ -193,7 +193,7 @@ const TaskDetail = (props: {task: Task; closer: () => void; onModified: () => vo
                                 <Avatar src={c.avatar} size={32} className='mt-1'/>
                                 <div className='ml-2' style={{flex: 1}}>
                                     <p style={{fontSize: 12, marginBottom: 4}}><span>{c.user}</span><span className='ml-3' style={{color: '#ccc'}} title={c.time}>{moment(c.time).fromNow()}</span></p>
-                                    <MDViewer content={task.content}/>
+                                    <MDViewer content={c.content}/>
                                 </div>
                             </Row>
                         ))}
@@ -320,12 +320,6 @@ TaskDetail.TimeEditor = (props: {task: Task, onModified: () => void}) => {
 TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified: () => void}) => {
     const [content, setContent] = React.useState<string>(props.task.content);
 
-    const uploader = (file: File, done: (url: string) => void) => {
-        let param = new FormData();
-        param.append('img', file, file.name);
-        request({url: '/api/file/upload', method: 'POST', data: param, success: (data: any) => done(data.url)})
-    };
-
     const modify = () => {
         if (props.task.content == content) {
             props.onCancel();
@@ -363,12 +357,6 @@ TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified
 
 TaskDetail.CommentEditor = (props: {task: Task, onCancel: () => void, onModified: () => void}) => {
     const [content, setContent] = React.useState<string>('');
-
-    const uploader = (file: File, done: (url: string) => void) => {
-        let param = new FormData();
-        param.append('img', file, file.name);
-        request({url: '/api/file/upload', method: 'POST', data: param, success: (data: any) => done(data.url)})
-    };
 
     const modify = () => {
         if (content.length == 0) {
