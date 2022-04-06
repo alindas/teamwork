@@ -176,8 +176,7 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
             </Row>
 
             <Form.Field htmlFor='content' label='任务描述'>
-                <textarea name='content' defaultValue={editContent} hidden/>
-                <MDEditor content={editContent} setContent={setEditContent}/>
+                <MDEditor name='content' content={editContent}/>
             </Form.Field>
 
             <Form.Field>

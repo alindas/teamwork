@@ -31,7 +31,6 @@ interface ViewMilestone {
 export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
     const [milestones, setMilestones] = React.useState<ProjectMilestone[]>([]);
     const [view, setView] = React.useState<ViewMilestone>();
-    const [desc, setDesc] = React.useState('');
 
     const validator: { [k: string]: FormFieldValidator } = {
         name: { required: '里程碑名称不可为空' },
@@ -65,18 +64,14 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
         });
     };
 
-    const uploadForDesc = (file: File, done: (url: string) => void) => {
-        let param = new FormData();
-        param.append('img', file, file.name);
-        request({ url: '/api/file/upload', method: 'POST', data: param, success: (data: any) => done(data.url) });
-    };
-
     const addMilestone = () => {
         let form: FormProxy = null;
         let closer: () => void = null;
 
         const submit = (ev: React.FormEvent<HTMLFormElement>) => {
             ev.preventDefault();
+            console.dir(ev.currentTarget);
+
             request({
                 url: `/api/project/${props.proj.id}/milestone`,
                 method: 'POST',
@@ -99,9 +94,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                         <Input.DatePicker name='endTime' mode='date' value={moment().add(1, 'd').format('YYYY-MM-DD')} />
                     </Form.Field>
                     <Form.Field htmlFor='desc' label='描述'>
-                        <textarea name='desc' defaultValue={desc} hidden/>
-                        <MDEditor content={desc} setContent={setDesc}/>
-                        {/* <Markdown.Editor name='desc' rows={10} onUpload={uploadForDesc} /> */}
+                        <MDEditor name='desc'/>
                     </Form.Field>
                 </Form>
             ),
@@ -137,9 +130,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                         <Input.DatePicker name='endTime' mode='date' value={m.endTime} />
                     </Form.Field>
                     <Form.Field htmlFor='desc' label='描述'>
-                        <textarea name='desc' defaultValue={desc} hidden/>
-                        <MDEditor content={desc} setContent={setDesc}/>
-                        {/* <Markdown.Editor name='desc' rows={10} value={m.desc} onUpload={uploadForDesc} /> */}
+                        <MDEditor name='desc' content={m.desc}/>
                     </Form.Field>
                 </Form>
             ),
@@ -231,7 +222,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                                             <a key='edit' className='link' onClick={ev => { ev.preventDefault(); ev.stopPropagation(); editMilestone(m) }}>编辑</a>,
                                             <div key='d-0' className='divider-v' />,
                                             <a key='publish' className='link' onClick={ev => { ev.preventDefault(); ev.stopPropagation(); publishTask(m) }}>发布任务</a>,
-                                            <div key='d-0' className='divider-v' />,
+                                            <div key='d-1' className='divider-v' />,
                                             <a key='delete' className='link' onClick={ev => { ev.preventDefault(); ev.stopPropagation(); delMilestone(m) }}>删除</a>,
                                         ] : [
                                             <a key='publish' className='link' onClick={ev => { ev.preventDefault(); ev.stopPropagation(); publishTask(m) }}>发布任务</a>,
