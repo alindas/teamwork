@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import 'moment/locale/zh-cn';
 
 import {Avatar, Button, Drawer, Row, Badge, Icon, Tab, Timeline, Modal, Form, Input, Notification, Dropdown, Menu} from '../../components';
 import {Task, TaskEvent} from '../../common/protocol';
