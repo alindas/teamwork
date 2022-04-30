@@ -157,6 +157,7 @@ export const Board = (props: BoardProps) => {
                                                     const weight = TaskWeight[t.weight];
                                                     const now = moment();
                                                     const endTime = moment(t.endTime);
+                                                    const isDragDisabled = !isAdmin && user.name !== t.creator.name && user.name !== t.developer.name && user.name !== t.tester.name;
 
                                                     return (
                                                         /** 此处修正禁止拖拽的逻辑
@@ -167,7 +168,7 @@ export const Board = (props: BoardProps) => {
                                                         <Draggable
                                                             draggableId={`${t.id}`}
                                                             index={i}
-                                                            isDragDisabled={!isAdmin && user.name !== t.creator.name && user.name !== t.developer.name && user.name !== t.tester.name} key={t.id}
+                                                            isDragDisabled={isDragDisabled} key={t.id}
                                                         >
                                                             {(p, s) => (
                                                                 <div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}>
@@ -181,7 +182,7 @@ export const Board = (props: BoardProps) => {
                                                                             className='p-0'
                                                                             fluid
                                                                             style={{textAlign: 'left', fontWeight: 'bold', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}
-                                                                            onClick={() => Viewer.open(t.id, props.onModified)}>
+                                                                            onClick={() => Viewer.open(t.id, isDragDisabled ? null : props.onModified)}>
                                                                             {t.bringTop&&<Badge theme='highlight' className='mr-1'>置顶</Badge>}
                                                                             <span style={{color: weight.color}}>{weight.name}</span>
                                                                             {t.name}
