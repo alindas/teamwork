@@ -16,8 +16,8 @@ type TFilter = {
 }
 
 const InitialFilter = {
-  startDate: moment().add(1, 'd').format('YYYY-MM'),
-  endDate: moment().add(1, 'd').format('YYYY-MM'),
+  startDate: moment().subtract(1, 'M').format('YYYY-MM'),
+  endDate: moment().add(1, 'M').format('YYYY-MM'),
   memberKey: '',
   taskKey: ''
 }
@@ -29,38 +29,43 @@ export default function overview() {
   const [users, setUsers] = useState<User[]>([]);
 
   const taskSchema: TableColumn[] = [
-    { label: '项目', dataIndex: 'name' },
-    { label: '完成时间', dataIndex: 'deadline', style: { wordBreak: 'break-all' } },
-    { label: '负责人', dataIndex: 'leader' },
+    { label: '项目', dataIndex: 'name', width: '10%' },
+    { label: '完成时间', dataIndex: 'deadline', style: { wordBreak: 'break-all' }, width: '10%' },
+    { label: '负责人', dataIndex: 'leader', width: '10%'},
     {
       label: '细分任务',
       dataIndex: 'describe',
       renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'describe'),
-      style: { padding: 0 }
+      style: { padding: 0 },
+      width: '35%'
     },
     {
       label: '开始时间',
       dataIndex: 'startTime',
       renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'startTime'),
-      style: { padding: 0 }
+      style: { padding: 0 },
+      width: '10%'
     },
     {
       label: '完成时间',
       dataIndex: 'endTime',
       renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'endTime'),
-      style: { padding: 0 }
+      style: { padding: 0 },
+      width: '10%'
     },
     {
       label: '成员',
       dataIndex: 'member',
       renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'member'),
-      style: { padding: 0 }
+      style: { padding: 0 },
+      width: '10%'
     },
     {
       label: '项目状态',
       dataIndex: 'state',
       renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'state'),
-      style: { padding: 0 }
+      style: { padding: 0 },
+      width: '5%'
     },
   ];
 
@@ -130,11 +135,11 @@ export default function overview() {
 
   const translateProjectStatus = (status: number) => {
     switch (status) {
-      case 0: return <Badge>代办中</Badge>; break;
+      case 0: return <Badge>待办中</Badge>; break;
       case 1: return <Badge theme='primary'>进行中</Badge>; break;
       case 2: return <Badge theme='info'>测试中</Badge>; break;
       case 3: return <Badge theme='success'>已完成</Badge>; break;
-      default: return <Badge>代办中</Badge>;
+      default: return <Badge>待办中</Badge>;
     }
   }
 
