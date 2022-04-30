@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 import {Button, Icon, Row, Input} from '../../components';
-import {TaskBrief, Project, ProjectMilestone} from '../../common/protocol';
+import {TaskBrief, Project, ProjectMilestone, User} from '../../common/protocol';
 import {request} from '../../common/request';
 
 import {Board} from './board';
 import {Gantt} from './gantt';
 
-export const TaskPage = (props: {uid: number}) => {
+export const TaskPage = (props: {user: User}) => {
     const [useGantt, setUseGantt] = React.useState<boolean>(false);
     const [tasks, setTasks] = React.useState<TaskBrief[]>([]);
     const [visibleTasks, setVisibleTask] = React.useState<TaskBrief[]>([]);
@@ -29,7 +29,7 @@ export const TaskPage = (props: {uid: number}) => {
             if (filter.p != -1 && t.proj.id != filter.p) return;
 
             const roles: number[] = [t.creator.id, t.developer.id, t.tester.id];
-            if (filter.me != -1 && roles[filter.me] != props.uid) return;
+            if (filter.me != -1 && roles[filter.me] != props.user.id) return;
             ret.push(t);
         });
 

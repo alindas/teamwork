@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Button, Icon, Row, Input, Drawer } from '../../components';
-import { TaskBrief, Project } from '../../common/protocol';
+import { TaskBrief, Project, User } from '../../common/protocol';
 import { ProjectRole } from '../../common/consts';
 import { request } from '../../common/request';
 
@@ -9,8 +9,8 @@ import { Creator } from '../task/creator';
 import { Board } from '../task/board';
 import { Gantt } from '../task/gantt';
 
-export const Tasks = (props: { proj: Project, isAdmin: boolean }) => {
-    const { proj, isAdmin } = props;
+export const Tasks = (props: { proj: Project, isAdmin: boolean, user: User }) => {
+    const { proj, isAdmin, user } = props;
 
     const [isGantt, setIsGantt] = React.useState<boolean>(false);
     const [isFilterVisible, setFilterVisible] = React.useState<boolean>(false);
@@ -84,8 +84,8 @@ export const Tasks = (props: { proj: Project, isAdmin: boolean }) => {
         });
     };
 
-    const board = React.useMemo(() => <Board tasks={visibleTasks} onModified={isAdmin ? fetchTasks : null} />, [visibleTasks]);
-    const gantt = React.useMemo(() => <Gantt tasks={visibleTasks} onModified={isAdmin ? fetchTasks : null} />, [visibleTasks]);
+    const board = React.useMemo(() => <Board tasks={visibleTasks} onModified={fetchTasks} isAdmin={isAdmin} user={user}/>, [visibleTasks]);
+    const gantt = React.useMemo(() => <Gantt tasks={visibleTasks} onModified={fetchTasks} />, [visibleTasks]);
 
     return (
         <div>

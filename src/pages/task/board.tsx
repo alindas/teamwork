@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import {DragDropContext, Draggable, Droppable, ResponderProvided} from 'react-beautiful-dnd';
 
 import {Badge, Button, Card, Col, Dropdown, Empty, Icon, Menu, Row} from '../../components';
-import {TaskBrief} from '../../common/protocol';
+import {TaskBrief, User} from '../../common/protocol';
 import {TaskStatus, TaskWeight} from '../../common/consts';
 import {request} from '../../common/request';
 import {Viewer} from './viewer';
@@ -12,6 +12,8 @@ import {Viewer} from './viewer';
 interface BoardProps {
     tasks: TaskBrief[];
     onModified?: () => void;
+    isAdmin?: boolean,
+    user?: User
 };
 
 interface SortMethod {
@@ -25,6 +27,9 @@ interface TaskGroup {
 };
 
 export const Board = (props: BoardProps) => {
+    const user = props.user??{ name: ''};
+    const isAdmin = props.isAdmin??true;
+
     const [groups, setGroups] = React.useState<TaskGroup[]>([]);
 
     const sorters: SortMethod[] = [
@@ -154,7 +159,16 @@ export const Board = (props: BoardProps) => {
                                                     const endTime = moment(t.endTime);
 
                                                     return (
-                                                        <Draggable draggableId={`${t.id}`} index={i} isDragDisabled={props.onModified == null} key={t.id}>
+                                                        /** 此处修正禁止拖拽的逻辑
+                                                         * 1. 如果为任务创建人，那么可以拖拽
+                                                         * 2. 如果该任务的参与者中包含当前用户，那么可以拖拽
+                                                         * 3. 其他情况禁止拖拽
+                                                         */
+                                                        <Draggable
+                                                            draggableId={`${t.id}`}
+                                                            index={i}
+                                                            isDragDisabled={!isAdmin && user.name !== t.creator.name && user.name !== t.developer.name && user.name !== t.tester.name} key={t.id}
+                                                        >
                                                             {(p, s) => (
                                                                 <div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}>
                                                                     <Card key={t.id} className='my-1 fg-muted' bordered style={{borderLeft: `4px solid ${endTime.diff(now) < 0?'red':'gray'}`}}>

@@ -27,8 +27,8 @@ export const Home = () => {
 
     const menus: MainMenu[] = [
         {name: '总览', id: 'overview', icon: 'table', click: () => setPage(<OverviewPage/>)},
-        {name: '工作台', id: 'task', icon: 'dashboard', click: () => setPage(<TaskPage uid={user.id}/>)},
-        {name: '项目', id: 'project', icon: 'pie-chart', click: () => setPage(<ProjectPage uid={user.id}/>)},
+        {name: '工作台', id: 'task', icon: 'dashboard', click: () => setPage(<TaskPage user={user}/>)},
+        {name: '项目', id: 'project', icon: 'pie-chart', click: () => setPage(<ProjectPage user={user}/>)},
         {name: '文档', id: 'document', icon: 'read', click: () => setPage(<DocumentPage/>)},
         {name: '分享', id: 'share', icon: 'cloud-upload', click: () => setPage(<SharePage/>)},
         {name: '管理', id: 'admin', icon: 'setting', click: () => setPage(<AdminPage/>), needAdmin: true},
@@ -90,7 +90,7 @@ export const Home = () => {
             </Layout.Sider>
 
             <Layout.Content>
-                {page||<TaskPage uid={user.id}/>}
+                {page||<TaskPage user={user}/>}
             </Layout.Content>
         </Layout>
     );
