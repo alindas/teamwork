@@ -376,14 +376,14 @@ Input.Uploader = (props: UploaderProps) => {
 };
 
 Input.DatePicker = (props: DatePickerProps) => {
-    const { name, className, style, placeholder, disabled, mode, onChange } = props;
-    const [value, setValue] = React.useState<string>(props.value || '');
+    const { name, className, style, placeholder, disabled, mode, onChange, value } = props;
+    // const [value, setValue] = React.useState<string>(props.value || '');
     const [popup, setPopup] = React.useState<boolean>(false);
 
     const handleChange = (date: string) => {
-        setValue(date);
+        // setValue(date);
         setPopup(false);
-        if (onChange) onChange(value);
+        if (onChange) onChange(date);
     };
 
     return (
@@ -393,12 +393,12 @@ Input.DatePicker = (props: DatePickerProps) => {
                 autoComplete='off'
                 disabled={disabled}
                 placeholder={placeholder}
-                value={value}
+                value={value || ''}
                 onChange={() => null}
                 onFocus={() => { !popup && setPopup(true); }}
             />
             <div className='anchor' hidden={!popup}>
-                <DateTime mode={mode} value={value} onChange={handleChange} />
+                <DateTime mode={mode} value={value || ''} onChange={handleChange} />
             </div>
         </div>
     );

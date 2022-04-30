@@ -1,15 +1,22 @@
+type TaskSlice = {
+    describe: string,
+    member: string,
+    startTime: string,
+    endTime: string,
+    state: 0 | 1 | 2 | 3
+}
 /**
  * 概览区项目信息
  */
-export interface Task {
+export interface OverviewTask {
+    /**
+     * 项目序列号
+     */
+    id: number,
     /**
      * 项目名
      */
     name: string,
-    /**
-     * 完成要求
-     */
-    requirements: string,
     /**
      * 完成时间
      */
@@ -19,25 +26,9 @@ export interface Task {
      */
     leader: string,
     /**
-     * 细分任务描述
+     * 细分任务
      */
-    describe: string,
-    /**
-     * 成员
-     */
-    member: string,
-    /**
-     * 开始时间
-     */
-    startTime: string,
-    /**
-     * 完成时间
-     */
-    endTime: string,
-    /**
-     * 项目状态
-     */
-    status: string,
+    taskSlice: TaskSlice[],
 }
 
 /**
