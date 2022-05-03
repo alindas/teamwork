@@ -1,9 +1,28 @@
+.overview-table {
+  cursor: default;
+}
+
 .overview-table ul {
   list-style: none;
 }
 
+.overview-table .describe-item > li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: calc((100vw - 71px) * 0.7);
+}
+
+.overview-table .describe-item > li:hover::before {
+  border: 1px solid #1fbb7d;
+}
+
 .overview-table li {
-  line-height: 1.5;
+  position: relative;
+  line-height: 2;
   padding: 0 .5em;
   word-break: break-all;
   white-space: pre-line;

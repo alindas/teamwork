@@ -145,7 +145,7 @@ export default function overview() {
 
   const renderTable = (record: any, key: string) => {
     return (
-      <ul>
+      <ul className={key === 'describe' ? 'describe-item' : ''}>
         {record.map((task: any, i: number) =>
           <li key={i} >
             { key == 'state' ? translateProjectStatus(task[key]) : task[key] }
@@ -238,7 +238,7 @@ export default function overview() {
             <label className='mr-1'>选择成员</label>
             <Select style={{ width: 128 }} value={filter.memberKey} onChange={handleMemberChange}>
               <option key={'none'} value={''}>无</option>
-              {users.map(user => <option key={user.id} value={user.account}>{user.account}</option>)}
+              {users.map(user => <option key={user.id} value={user.name}>{user.name}</option>)}
             </Select>
           </div>
           <div className='ml-3' style={{ marginRight: '1em' }}>
