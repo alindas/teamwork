@@ -247,7 +247,7 @@ TaskDetail.MemberEditor = (props: {task: Task, kind: 'creator'|'developer'|'test
     };
 
     return (
-        <Dropdown className='mr-2 pointer' label={<span><Icon type={icon} className='mr-1'/>{old.name}</span>} onHide={handleHide}>
+        <Dropdown trigger='hover' className='mr-2 pointer' label={<span><Icon type={icon} className='mr-1'/>{old.name}</span>} onHide={handleHide}>
             <div className='p-2'>
                 <p className='text-bold mb-1'>{title}</p>
                 <Input.Select value={old.id} onChange={handleChange} style={{width: 200}} >
@@ -311,7 +311,7 @@ TaskDetail.TimeEditor = (props: {task: Task, onModified: () => void}) => {
                         </Form.Field>
                     </Form>
 
-                    <Button size='sm' theme='primary' fluid onClick={() => form.submit()}>提交修改</Button>
+                    <Button size='sm' theme='primary' fluid onClick={() => { form.submit(); document.body.click(); }}>提交修改</Button>
                 </div>
             </div>
         </Dropdown>
