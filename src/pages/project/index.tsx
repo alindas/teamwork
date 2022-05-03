@@ -111,7 +111,7 @@ export const ProjectPage = (props: { user: User }) => {
                         >
                             <Row flex={{ justify: 'space-between' }} style={{ padding: '12px 8px', flexDirection: 'column' }}>
                                 <div className='project-title'>
-                                    <span style={{ color: ColorPool[i % ColorPool.length], fontSize: '16px', fontWeight: '600' }}>{project.name}</span>
+                                    <span style={{ color: '#1a2a3a', fontSize: '16px', fontWeight: '600' }}>{project.name}</span>
                                 </div>
                                 <div>
                                     <Badge theme='info'>{isAdmin ? '管理员' : '成员'}</Badge>
