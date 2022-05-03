@@ -136,8 +136,8 @@ export default function overview() {
   const translateProjectStatus = (status: number) => {
     switch (status) {
       case 0: return <Badge>待办中</Badge>; break;
-      case 1: return <Badge theme='primary'>进行中</Badge>; break;
-      case 2: return <Badge theme='info'>测试中</Badge>; break;
+      case 1: return <Badge theme='warning'>进行中</Badge>; break;
+      case 2: return <Badge theme='primary'>测试中</Badge>; break;
       case 3: return <Badge theme='success'>已完成</Badge>; break;
       default: return <Badge>待办中</Badge>;
     }

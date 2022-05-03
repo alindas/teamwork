@@ -17,7 +17,7 @@ export const TaskStatus = [
         type: 'underway',
         name: '进行中',
         icon: 'build',
-        color: '#17a2b8',
+        color: '#ffb800',
     },
     {
         type: 'testing',
