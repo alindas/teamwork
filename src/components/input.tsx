@@ -377,11 +377,11 @@ Input.Uploader = (props: UploaderProps) => {
 
 Input.DatePicker = (props: DatePickerProps) => {
     const { name, className, style, placeholder, disabled, mode, onChange, value } = props;
-    // const [value, setValue] = React.useState<string>(props.value || '');
+    const [selfValue, setSelfValue] = React.useState<string>(props.value || '');
     const [popup, setPopup] = React.useState<boolean>(false);
 
     const handleChange = (date: string) => {
-        // setValue(date);
+        setSelfValue(date);
         setPopup(false);
         if (onChange) onChange(date);
     };
@@ -393,7 +393,7 @@ Input.DatePicker = (props: DatePickerProps) => {
                 autoComplete='off'
                 disabled={disabled}
                 placeholder={placeholder}
-                value={value || ''}
+                value={selfValue || ''}
                 onChange={() => null}
                 onFocus={() => { !popup && setPopup(true); }}
             />
