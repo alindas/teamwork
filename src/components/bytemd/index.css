@@ -7,3 +7,8 @@
 .bytemd-toolbar-right > div[bytemd-tippy-path="5"] {
   display: none;
 }
+
+/* 全屏样式设置堆叠层级 */
+.bytemd-fullscreen {
+  z-index: 999;
+}
