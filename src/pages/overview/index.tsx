@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { OverviewTask, User } from "../../common/protocol";
 import { request } from "../../common/request";
 import { Badge, Button, Icon, Input, Row, Table, TableColumn } from "../../components";
+import './index.css';
 
 const { Select, DatePicker } = Input;
-import './index.css';
 
 type TFilter = {
   startDate: string,
@@ -61,7 +61,7 @@ export default function overview() {
       width: '10%'
     },
     {
-      label: '项目状态',
+      label: '任务状态',
       dataIndex: 'state',
       renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'state'),
       style: { padding: 0 },
@@ -76,7 +76,7 @@ export default function overview() {
 
   const fetchUsers = () => {
     request({
-      url: '/admin/user/list',
+      url: 'api/user/list',
       success: (data: User[]) => {
         setUsers(data);
       }
@@ -219,7 +219,50 @@ export default function overview() {
   }
 
   const exportTask = () => {
-    console.log('export func')
+    const data = [
+      {
+        name: "哈哈",
+        age: 1,
+        sex: "男",
+        companyName: "公司1",
+        companyAddress: {
+          companyAddressZh:"公司地址中文1",
+          companyAddressEn:"公司地址英文1"
+        }
+      },
+      {
+        name: "呵呵",
+        age: 2,
+        sex: "女",
+        companyName: "公司2",
+        companyAddress: {
+          companyAddressZh:"公司地址中文2",
+          companyAddressEn:"公司地址英文2"
+        }
+      },
+      {
+        name: "嘻嘻",
+        age: 3,
+        sex: "男",
+        companyName: "公司3",
+        companyAddress: {
+          companyAddressZh:"公司地址中文3",
+          companyAddressEn:"公司地址英文3"
+        }
+      },
+      {
+        name: "啦啦",
+        age: 4,
+        sex: "女",
+        companyName: "公司4",
+        companyAddress: {
+          companyAddressZh:"公司地址中文4",
+          companyAddressEn:"公司地址英文4"
+        }
+      }
+    ];
+    console.log('export func');
+
   }
 
   return (
