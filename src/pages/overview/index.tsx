@@ -296,7 +296,7 @@ export default function overview() {
         </Row>
       </div>
       <div className="overview-table">
-        <Table dataSource={filterTasks || tasks} columns={taskSchema} pagination={15} />
+        <Table dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'}/>
       </div>
     </div>
   );
