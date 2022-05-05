@@ -15,7 +15,10 @@ export const Dropdown = (props: DropdownProps) => {
     const [visible, setVisible] = React.useState<boolean>(false);
 
     const closeContentWindow = () => {
-        !visible && setVisible(false);
+        if(!visible) {
+            setVisible(false);
+            onHide && onHide();
+        }
         window.removeEventListener('click', closeContentWindow);
     }
 
@@ -37,7 +40,9 @@ export const Dropdown = (props: DropdownProps) => {
     }
 
     const handleHover = () => {
-        if (trigger != 'click') setVisible(true);
+        if (trigger != 'click') {
+            setVisible(true);
+        }
     };
 
     const handleLeave = (e: any) => {

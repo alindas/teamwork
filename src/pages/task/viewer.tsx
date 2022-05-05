@@ -226,11 +226,25 @@ TaskDetail.MemberEditor = (props: {task: Task, kind: 'creator'|'developer'|'test
     });
 
     const [selected, setSelected] = React.useState<number>(old.id);
+    // const [options, setSelected] = React.useState<number>(old.id);
+    // console.log(props.task);
 
-    const handleChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
-        let uid = parseInt(ev.target.value);
+    // React.useEffect(() => {
+    //     const members = props.task.proj.members.sort((a, b) => {
+    //         if (a.role != b.role) return a.role - b.role;
+    //         return a.user.account.localeCompare(b.user.account);
+    //     });
+    // }, [])
+
+    const handleChange = (targetValue: string | number) => {
+        let uid = typeof targetValue == 'number' ? targetValue : parseInt(targetValue);
         setSelected(uid);
     };
+
+    // const handleChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+    //     let uid = parseInt(ev.target.value);
+    //     setSelected(uid);
+    // };
 
     const handleHide = () => {
         if (selected != old.id) {
@@ -246,13 +260,27 @@ TaskDetail.MemberEditor = (props: {task: Task, kind: 'creator'|'developer'|'test
         }
     };
 
+    // return (
+    //     <Dropdown trigger='hover' className='mr-2 pointer' label={<span><Icon type={icon} className='mr-1'/>{old.name}</span>} onHide={handleHide}>
+    //         <div className='p-2'>
+    //             <p className='text-bold mb-1'>{title}</p>
+    //             <Input.Select value={old.id} onChange={handleChange} style={{width: 200}} >
+    //                 {members.map(m => <option key={m.user.id} value={m.user.id}>【{ProjectRole[m.role]}】{m.user.name}</option>)}
+    //             </Input.Select>
+    //         </div>
+    //     </Dropdown>
+    // );
+
     return (
         <Dropdown trigger='hover' className='mr-2 pointer' label={<span><Icon type={icon} className='mr-1'/>{old.name}</span>} onHide={handleHide}>
             <div className='p-2'>
                 <p className='text-bold mb-1'>{title}</p>
-                <Input.Select value={old.id} onChange={handleChange} style={{width: 200}} >
-                    {members.map(m => <option key={m.user.id} value={m.user.id}>【{ProjectRole[m.role]}】{m.user.name}</option>)}
-                </Input.Select>
+                <Input.CommonSelect
+                    value={old.id}
+                    onChange={handleChange}
+                    style={{width: 200}}
+                    options={members.map(m => ({label: `【${ProjectRole[m.role]}】${m.user.name}`, value: m.user.id}))}
+                />
             </div>
         </Dropdown>
     );
