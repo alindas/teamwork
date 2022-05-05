@@ -1,6 +1,6 @@
 .card{position: relative; margin: 0; padding: 0; background: #fff}
 .card-header{position: relative; padding: 4px 8px; font-size: 16px; font-weight: 500; border-bottom: 1px solid #e8e8e8}
-.card-body{padding: 4px 8px}
+.card-body{padding: 4px 8px;max-height: 780px;overflow: auto;}
 .card-footer{position: relative; padding: 4px 8px; border-top: 1px solid #e8e8e8}
 
 .card-bordered{border: 1px solid #e8e8e8}
