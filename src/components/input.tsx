@@ -3,6 +3,7 @@ import * as React from 'react';
 import { makeClass, makeId } from './basic';
 import { Icon } from './icon';
 import { DateTime } from './datetime';
+import { Empty } from './empty';
 import './input.css';
 
 interface InputProps {
@@ -43,6 +44,18 @@ interface RadioProps {
     options: RadioOption[];
     value?: string;
     onChange?: (newValue: string) => void;
+};
+
+interface SelectProps {
+    name?: string;
+    className?: string;
+    style?: React.CSSProperties;
+    value?: string | number;
+    onChange?: (value: number | string) => void;
+    options?: {
+        label: string | number,
+        value: string | number
+    }[]
 };
 
 interface SwitchProps {
@@ -263,6 +276,53 @@ Input.Password = (props: PasswordProps) => {
     );
 };
 
+// 重构 select 控件用以解决 fireFox 兼容问题
+Input.CommonSelect = (props: SelectProps) => {
+    const { className, style, value, onChange, options = [], ...nativeProps } = props;
+    const [selected, setSelected] = React.useState<{label: number | string, value: number | string}>({label: '', value});
+    const [ifShowOptions, setIfShowOptions] = React.useState<boolean>(false);
+
+    const handleChange = (options: {label: number | string, value: number | string}) => {
+        setIfShowOptions(false);
+        setSelected(options)
+        if (onChange) onChange(options.value);
+    };
+
+    React.useEffect(() => {
+        const currentOption = options.find(option => option.value === value);
+        if (typeof currentOption != 'undefined') {
+            setSelected(currentOption);
+        }
+        else {
+            setSelected({label: '', value});
+        }
+    }, [value]);
+
+    return (
+        <div>
+            <input defaultValue={selected.value} {...nativeProps} style={{display: 'none'}}/>
+            <div {...makeClass('select', className)} style={style}>
+                <div className="select-container" onClick={() => setIfShowOptions(prev => !prev)}>
+                    <span>{selected.label}</span>
+                    <Icon className='mr-1' type='down' />
+                </div>
+                <div className="select-list" style={ifShowOptions ? {} : {display: 'none'}}>
+                    {
+                        options.length == 0 ? <div className="select-item"><Empty label={'暂无选项'}/></div>
+                        : options.map(option =>
+                            <div
+                                key={option.value}
+                                className="select-item"
+                                onClick={() => { handleChange(option) }}
+                                style={selected.value == option.value ? {background: '#e6f7ff'} : {}}
+                            >{option.label}</div>)
+                    }
+                </div>
+            </div>
+        </div>
+    )
+};
+
 Input.Select = (props: React.SelectHTMLAttributes<HTMLSelectElement>) => {
     const { className, style, value, onChange, children, ...nativeProps } = props;
     const [selected, setSelected] = React.useState<string | number | string[]>(value as string | number | string[]);
@@ -377,8 +437,12 @@ Input.Uploader = (props: UploaderProps) => {
 
 Input.DatePicker = (props: DatePickerProps) => {
     const { name, className, style, placeholder, disabled, mode, onChange, value } = props;
-    const [selfValue, setSelfValue] = React.useState<string>(props.value || '');
+    const [selfValue, setSelfValue] = React.useState<string>(value || '');
     const [popup, setPopup] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        value !== selfValue && setSelfValue(value);
+    }, [value])
 
     const handleChange = (date: string) => {
         setSelfValue(date);
@@ -398,7 +462,7 @@ Input.DatePicker = (props: DatePickerProps) => {
                 onFocus={() => { !popup && setPopup(true); }}
             />
             <div className='anchor' hidden={!popup}>
-                <DateTime mode={mode} value={value || ''} onChange={handleChange} />
+                <DateTime mode={mode} value={selfValue || ''} onChange={handleChange} />
             </div>
         </div>
     );
