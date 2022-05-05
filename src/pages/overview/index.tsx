@@ -76,7 +76,7 @@ export default function overview() {
 
   const fetchUsers = () => {
     request({
-      url: 'api/user/list',
+      url: '/api/user/list',
       success: (data: User[]) => {
         setUsers(data);
       }
@@ -199,8 +199,8 @@ export default function overview() {
       for(let slice of task.taskSlice) {
         if ((taskKey === '' || taskReg.test(slice.describe)) &&
           (memberKey === '' || memberReg.test(slice.member)) &&
-          (moment(startDate).isSameOrBefore(slice.startTime.slice(0, -3))) &&
-          (moment(endDate).isSameOrAfter(slice.endTime.slice(0, -3)))
+          !((moment(startDate).isAfter(slice.endTime.slice(0, -3))) ||
+          (moment(endDate).isBefore(slice.startTime.slice(0, -3))))
         ) {
           taskSlice.push(slice);
         }
