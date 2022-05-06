@@ -24,8 +24,10 @@ export const request = (param: Parameter) => {
     init.body = JSON.stringify(data);
   }
 
-  let finish = () => { !showLoading && Loading.hide(); }
-  if (!showLoading) Loading.show();
+  let finish = () => { showLoading && Loading.hide(); }
+
+  /** 为了兼容以前代码，showLoading 与 */
+  if (showLoading) Loading.show();
 
   if (success == null) {
     return fetch(actually_url, init)
