@@ -240,6 +240,7 @@ export const Gantt = (props: GanttProps) => {
                     onClick={() => Viewer.open(task.id, props.onModified)}/>);
 
                 items.push(<text
+                    onClick={() => Viewer.open(task.id, props.onModified)}
                     x={offset*CellWidth+CellWidth*0.5}
                     y={count*CellHeight+CellHeight*0.5}
                     fill='white'
