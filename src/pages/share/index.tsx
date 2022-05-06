@@ -21,7 +21,7 @@ export const SharePage = () => {
             <span>
                 <a className='link' href={`/api/file/share/${data.id}`}>下载</a>
                 <div className='divider-v'/>
-                <a className='link' href='javascript:void(0)' onClick={() => delShare(data)}>删除</a>
+                <a className='link' href='#!' onClick={() => delShare(data)}>删除</a>
             </span>
         )}
     ];

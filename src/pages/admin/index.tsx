@@ -164,7 +164,6 @@ export const AdminPage = () => {
     };
 
     const changeUserPower = (user: User) => {
-        console.log(user);
         const formData = new FormData;
         formData.append('account', user.account);
         formData.append('name', user.name);
