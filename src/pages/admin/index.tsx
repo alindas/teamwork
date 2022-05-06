@@ -13,14 +13,14 @@ export const AdminPage = () => {
         {label: '昵称', dataIndex: 'name'},
         {label: '帐号', dataIndex: 'account'},
         {label: '是否是内置帐号', align: 'center', renderer: (data: User) => <label>{data.isBuildin?'是':'否'}</label>},
-        {label: '管理员', align: 'center', renderer: (data: User) => <Input.Switch on={data.isSu} disabled={true}/>},
+        {label: '管理员', align: 'center', renderer: (data: User) => <Input.Switch on={data.isSu} disabled={false} onChange={() => changeUserPower(data)}/>},
         {label: '操作', renderer: (data: User) => (
             <span>
-                <a className='link' href='javascript:void(0)' onClick={() => editUser(data)}>编辑</a>
+                <a className='link' href='#!' onClick={() => editUser(data)}>编辑</a>
                 <div className='divider-v'/>
-                <a className='link' href='javascript:void(0)' onClick={() => toggleUserLock(data)}>{data.isLocked?'解锁':'禁用'}</a>
+                <a className='link' href='#!' onClick={() => toggleUserLock(data)}>{data.isLocked?'解锁':'禁用'}</a>
                 <div className='divider-v'/>
-                <a className='link' href='javascript:void(0)' onClick={() => delUser(data)}>删除</a>
+                <a className='link' href='#!' onClick={() => delUser(data)}>删除</a>
             </span>
         )}
     ];
@@ -137,9 +137,9 @@ export const AdminPage = () => {
                     <Form.Field htmlFor='name' label='昵称'>
                         <Input name='name' value={user.name}/>
                     </Form.Field>
-                    {!!user.isSu && <Form.Field htmlFor='password' label='密码'>
+                    <Form.Field htmlFor='password' label='密码'>
                         <Input name='password' value={''}/>
-                    </Form.Field>}
+                    </Form.Field>
                     <Form.Field htmlFor='isSu'>
                         <Input.Checkbox name='isSu' label='拥有超级管理员权限' value='1' checked={user.isSu}/>
                     </Form.Field>
@@ -162,6 +162,22 @@ export const AdminPage = () => {
             }
         });
     };
+
+    const changeUserPower = (user: User) => {
+        console.log(user);
+        const formData = new FormData;
+        formData.append('account', user.account);
+        formData.append('name', user.name);
+        formData.append('isSu', user.isSu ? '0' : '1');
+        request({
+            url: `/admin/user/${user.id}`,
+            method: 'PUT',
+            data: formData,
+            success: () => {
+                fetchUsers();
+            }
+        });
+    }
 
     return (
         <div className='m-4'>
