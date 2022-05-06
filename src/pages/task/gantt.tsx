@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import {TaskBrief} from '../../common/protocol';
 import {TaskStatus} from '../../common/consts';
 import {Viewer} from './viewer';
+import { Empty } from '../../components';
 
 interface GanttProps {
     tasks: TaskBrief[];
@@ -92,17 +93,17 @@ export const Gantt = (props: GanttProps) => {
 
         const _desc = ['日', '一', '二', '三', '四', '五', '六'];
         const _generate = (output: JSX.Element[], startX: number, days: IDay[], month: number) => {
-            output.push(<text x={startX + days.length * CellWidth * 0.5} y={CellHeight * 0.5}>{month+1}月</text>);            
+            output.push(<text x={startX + days.length * CellWidth * 0.5} y={CellHeight * 0.5}>{month+1}月</text>);
             output.push(<line x1={startX + days.length * CellWidth+0.5} y1={0} x2={startX + days.length * CellWidth+0.5} y2={CellHeight} fill='none' stroke='black'/>);
 
             days.forEach((info, idx) => {
                 let posX = startX + idx * CellWidth;
                 output.push(<text x={posX + CellWidth * 0.5} y={CellHeight * 1.5} fill={info.isWeekend ? 'goldenrod' : '#a7a7a7'}>{info.weekday}</text>);
                 output.push(<text x={posX + CellWidth * 0.5} y={CellHeight * 2.5} fill={info.isWeekend ? 'goldenrod' : '#a7a7a7'}>{info.day}</text>);
-                output.push(<line x1={posX + CellWidth+0.5} y1={CellHeight} x2={posX + CellWidth+0.5} y2={CellHeight * 3} stroke='black'/>);                     
+                output.push(<line x1={posX + CellWidth+0.5} y1={CellHeight} x2={posX + CellWidth+0.5} y2={CellHeight * 3} stroke='black'/>);
             });
         };
-        
+
         let graphs: JSX.Element[] = [];
         let days: IDay[] = [];
 
@@ -132,7 +133,7 @@ export const Gantt = (props: GanttProps) => {
         setTimeline(
             <div ref={timelineRef} style={{width: '100%', height: CellHeight * 3, overflow: 'hidden', border: '1px solid black', background: '#495057'}}>
                 <svg width={width} height={CellHeight * 3}>
-                    <g textAnchor='middle' dominantBaseline='middle' fill='#a7a7a7' style={{fontWeight: "bolder"}}>                 
+                    <g textAnchor='middle' dominantBaseline='middle' fill='#a7a7a7' style={{fontWeight: "bolder"}}>
                         {...graphs}
                     </g>
 
@@ -172,13 +173,13 @@ export const Gantt = (props: GanttProps) => {
             <div
                 ref={briefRef}
                 style={{
-                    width: 540, 
-                    minWidth: 540, 
-                    maxHeight: `calc(100vh - ${200+scollWidth}px)`, 
-                    height: height, 
-                    marginBottom: 16, 
-                    overflow: 'hidden', 
-                    border: '1px solid black', borderRight: 'none', borderTop: 'none', 
+                    width: 540,
+                    minWidth: 540,
+                    maxHeight: `calc(100vh - ${200+scollWidth}px)`,
+                    height: height,
+                    marginBottom: 16,
+                    overflow: 'hidden',
+                    border: '1px solid black', borderRight: 'none', borderTop: 'none',
                     background: '#495057'}}>
                 <svg width={540} height={height}>
                     <g textAnchor='middle' dominantBaseline='middle' fill='#a7a7a7'>
@@ -190,7 +191,7 @@ export const Gantt = (props: GanttProps) => {
                         {props.tasks.map((_, idx) => {
                             return <line x1={80} y1={(idx + 1) * CellHeight+0.5} x2={540} y2={(idx + 1) * CellHeight+0.5} />
                         })}
-                    </g>                    
+                    </g>
                 </svg>
             </div>
         );
@@ -227,19 +228,19 @@ export const Gantt = (props: GanttProps) => {
                 let tid = task.id;
                 let offset = moment(task.startTime).diff(start, 'd');
 
-                items.push(<rect 
-                    x={offset*CellWidth+2} 
+                items.push(<rect
+                    x={offset*CellWidth+2}
                     y={count*CellHeight+2}
                     rx={8}
                     ry={8}
                     opacity={0.9}
-                    width={used*CellWidth-4} 
-                    height={CellHeight-4} 
-                    fill={TaskStatus[task.state].color} 
+                    width={used*CellWidth-4}
+                    height={CellHeight-4}
+                    fill={TaskStatus[task.state].color}
                     onClick={() => Viewer.open(task.id, props.onModified)}/>);
 
                 items.push(<text
-                    x={offset*CellWidth+CellWidth*0.5} 
+                    x={offset*CellWidth+CellWidth*0.5}
                     y={count*CellHeight+CellHeight*0.5}
                     fill='white'
                     style={{fontSize: '10px'}}>{used}天</text>);
@@ -253,7 +254,7 @@ export const Gantt = (props: GanttProps) => {
                 <svg width={width} height={height}>
                     {...grid}
 
-                    <g textAnchor='middle' dominantBaseline='middle'> 
+                    <g textAnchor='middle' dominantBaseline='middle'>
                         {...items}
                     </g>
                 </svg>
@@ -270,11 +271,11 @@ export const Gantt = (props: GanttProps) => {
         <div style={{width: '100%', maxHeight: '100%'}}>
             {summary}
 
-            <div style={{display: 'flex'}}>                
+            <div style={{display: 'flex'}}>
                 <div style={{width: 540, height: CellHeight * 3, border: '1px solid black', borderRight: 'none', background: '#495057'}}>
                     <svg width={540} height={CellHeight * 3}>
                         <path d={`M80.5 0 V${CellHeight*3} M380.5 0 V${CellHeight*3} M460.5 0 V${CellHeight*3} Z`} stroke='black'/>
-                        <g textAnchor='middle' dominantBaseline='middle' fill='#a7a7a7' style={{fontWeight: "bolder"}}>                  
+                        <g textAnchor='middle' dominantBaseline='middle' fill='#a7a7a7' style={{fontWeight: "bolder"}}>
                             <text x={40} y={CellHeight*1.5}>开发人员</text>
                             <text x={230} y={CellHeight*1.5}>任务内容</text>
                             <text x={420} y={CellHeight*1.5}>发起者</text>
@@ -286,9 +287,10 @@ export const Gantt = (props: GanttProps) => {
                 {timeline}
             </div>
 
-            <div style={{display: 'flex'}}>
-                {brief}
-                {graph}
+            <div style={{display: 'flex', background: '#495057'}}>
+                {
+                    props.tasks.length == 0 ? <Empty label='暂无数据'/> : <>{brief}{graph}</>
+                }
             </div>
         </div>
     );

@@ -1,9 +1,10 @@
 import * as moment from "moment";
 import React, { useEffect, useState } from "react";
 
-import { OverviewTask, User } from "../../common/protocol";
+import { OverviewProject, User } from "../../common/protocol";
 import { request } from "../../common/request";
 import { Badge, Button, Icon, Input, Row, Table, TableColumn } from "../../components";
+import { Gantt } from "./gantt-overview";
 import './index.css';
 
 const { Select, DatePicker } = Input;
@@ -24,9 +25,10 @@ const InitialFilter = {
 
 export default function overview() {
   const [filter, setFilter] = useState<TFilter>(InitialFilter);
-  const [tasks, setTasks] = useState<OverviewTask[]>([]);
-  const [filterTasks, setFilterTasks] = useState<OverviewTask[] | null>(null);
+  const [tasks, setTasks] = useState<OverviewProject[]>([]);
+  const [filterTasks, setFilterTasks] = useState<OverviewProject[] | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [useGantt, setUseGantt] = React.useState<boolean>(false);
 
   const taskSchema: TableColumn[] = [
     { label: '项目', dataIndex: 'name', width: '10%' },
@@ -68,6 +70,9 @@ export default function overview() {
       width: '5%'
     },
   ];
+
+  const gantt = React.useMemo(() => <Gantt projects={filterTasks??[]} onModified={fetchTasks}/>, [filterTasks]);
+  const table = React.useMemo(() => <Table dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'}/>, [filterTasks]);
 
   useEffect(() => {
     fetchUsers();
@@ -123,12 +128,13 @@ export default function overview() {
                 member: composeMember(sliceTask),
                 startTime: sliceTask.startTime,
                 endTime: sliceTask.endTime,
-                state: sliceTask.state
+                state: sliceTask.state,
+                id: sliceTask.id
               })
             })
           })
         })
-        setTasks(formatData as OverviewTask[]);
+        setTasks(formatData as OverviewProject[]);
       }
     });
   };
@@ -292,11 +298,12 @@ export default function overview() {
             <Button size='sm' onClick={reloadFilter}><Icon className='mr-1' type='reload' />重置</Button>
             <Button size='sm' theme={'primary'} onClick={findTask}><Icon className='mr-1' type='search' />查找</Button>
             <Button size='sm' theme={'primary'} onClick={exportTask}><Icon className='mr-1' type='export' />导出</Button>
+            <Button size='sm' onClick={() => setUseGantt(prev => !prev)}><Icon className='mr-1' type='view'/>{useGantt ? '看板模式' : '甘特图'}</Button>
           </div>
         </Row>
       </div>
-      <div className="overview-table">
-        <Table dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'}/>
+      <div className='px-2 mt-3'>
+        { useGantt ? <div className="overview-gantt">{gantt}</div> : <div className="overview-table">{table}</div> }
       </div>
     </div>
   );
