@@ -347,6 +347,7 @@ TaskDetail.TimeEditor = (props: {task: Task, onModified: () => void}) => {
 };
 
 TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified: () => void}) => {
+    const [content, setContent] = React.useState<string>(props.task.content || '');
 
     const modify = (value: string | boolean) => {
         // 如果是保存
@@ -361,6 +362,8 @@ TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified
         if (value === false) {
             value = props.task.content;
             isCancel = true;
+        } else {
+            setContent(value);
         }
 
         if (value.length == 0) {
@@ -383,7 +386,7 @@ TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified
 
     return (
         <div>
-            <MDEditor content={props.task.content} setContent={modify} />
+            <MDEditor content={content} setContent={modify} />
             <div className='mt-2 center-child'>
                 <Button theme='primary' size='sm' onClick={() => modify(true)}>修改</Button>
                 <Button size='sm' onClick={() => modify(false)}>取消</Button>
