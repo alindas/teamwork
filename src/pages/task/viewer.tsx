@@ -347,38 +347,46 @@ TaskDetail.TimeEditor = (props: {task: Task, onModified: () => void}) => {
 };
 
 TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified: () => void}) => {
-    const [content, setContent] = React.useState<string>(props.task.content);
 
-    const modify = () => {
-        if (props.task.content == content) {
+    const modify = (value: string | boolean) => {
+        // 如果是保存
+        if (value === true) {
+            props.onModified();
             props.onCancel();
             return;
         }
 
-        if (content.length == 0) {
+        // 如果是取消
+        let isCancel = false;
+        if (value === false) {
+            value = props.task.content;
+            isCancel = true;
+        }
+
+        if (value.length == 0) {
             Notification.alert('任务详情不可为空', 'error');
             return;
         }
 
         let param = new FormData();
-        param.append('content', content);
+        param.append('content', value);
         request({
             url: `/api/task/${props.task.id}/content`,
             method: 'PUT',
             data: param,
+            showLoading: false,
             success: () => {
-                props.onCancel();
-                props.onModified();
+                isCancel && props.onCancel();
             }
         })
     };
 
     return (
         <div>
-            <MDEditor content={content} setContent={setContent} />
+            <MDEditor content={props.task.content} setContent={modify} />
             <div className='mt-2 center-child'>
-                <Button theme='primary' size='sm' onClick={modify}>修改</Button>
-                <Button size='sm' onClick={props.onCancel}>取消</Button>
+                <Button theme='primary' size='sm' onClick={() => modify(true)}>修改</Button>
+                <Button size='sm' onClick={() => modify(false)}>取消</Button>
             </div>
         </div>
     )
