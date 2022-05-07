@@ -11,6 +11,7 @@ export const DocumentPage = () => {
     const [nodes, setNodes] = React.useState<TreeNode[]>([]);
     const [current, setCurrent] = React.useState<Document>(null);
     const [isEditing, setEditing] = React.useState<boolean>(false);
+    const [editContent, setEditContent] = React.useState<string>();
 
     const nodeContextMenu: TreeNodeAction[] = [
         { label: '新建同级', onClick: n => addDoc(n.data ? findNode(n.data.parent) : n) },
@@ -78,6 +79,7 @@ export const DocumentPage = () => {
                 editingStatus.current.isEditing = editingMode;
                 editingStatus.current.article = data;
                 setEditing(editingMode);
+                setEditContent(data.content);
             }
         });
     };
@@ -216,6 +218,8 @@ export const DocumentPage = () => {
         if (value === false) {
             value = current.content;
             isCancel = true;
+        } else {
+            setEditContent(value);
         }
         if (!isCancel && (!value || value.length == 0 || value == current.content)) return;
 
@@ -263,7 +267,7 @@ export const DocumentPage = () => {
             <Layout.Content>
                 {isEditing ? (
                     <div className='mt-3 px-1 document-editor'>
-                        <MDEditor content={current.content} setContent={editDoc} />
+                        <MDEditor content={editContent} setContent={editDoc} />
                         <Row flex={{ align: 'middle', justify: 'center' }}>
                             <Button theme='primary' size='sm' onClick={() => editDoc(true)}>保存修改</Button>
                             <Button theme='default' size='sm' onClick={() => editDoc(false)}>取消</Button>
