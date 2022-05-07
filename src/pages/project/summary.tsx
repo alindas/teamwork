@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Icon, Markdown, Button, Card, Row } from '../../components';
+import { Icon, Button, Card, Row } from '../../components';
 import { Project, ProjectSummary } from '../../common/protocol';
 import { request } from '../../common/request';
 import { MDEditor, MDViewer } from '../../components/bytemd';
@@ -73,21 +73,32 @@ export const Summary = (props: { proj: Project, isAdmin: boolean }) => {
 Summary.DescEditor = (props: { pid: number, desc: string, onCancel: () => void, onModified: () => void }) => {
     const [content, setContent] = React.useState<string>(props.desc || '');
 
-    const modify = () => {
-        if (props.desc == content) {
+    const modify = (value: string | boolean) => {
+        // 如果是保存
+        if (value === true) {
+            props.onModified();
             props.onCancel();
             return;
         }
 
+        // 如果是取消
+        let isCancel = false;
+        if (value === false) {
+            value = props.desc;
+            isCancel = true;
+        } else {
+            setContent(value);
+        }
+
         let param = new FormData();
-        param.append('desc', content);
+        param.append('desc', value);
         request({
             url: `/api/project/${props.pid}/desc`,
             method: 'PUT',
             data: param,
+            showLoading: false,
             success: () => {
-                props.onCancel();
-                props.onModified();
+                isCancel && props.onCancel();
             }
         })
     };
@@ -95,11 +106,11 @@ Summary.DescEditor = (props: { pid: number, desc: string, onCancel: () => void, 
     return (
         <div>
             <div style={{width: '50%', height: '300px'}}>
-                <MDEditor content={content} setContent={setContent} />
+                <MDEditor content={content} setContent={modify} />
             </div>
             <div className='mt-2 center-child'>
-                <Button theme='primary' size='sm' onClick={modify}>修改</Button>
-                <Button size='sm' onClick={props.onCancel}>取消</Button>
+                <Button theme='primary' size='sm' onClick={() => modify(true)}>修改</Button>
+                <Button size='sm' onClick={() => modify(false)}>取消</Button>
             </div>
         </div>
     )
