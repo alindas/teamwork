@@ -162,13 +162,13 @@ export const Creator = (props: {proj: Project, milestone?: ProjectMilestone, onD
             <Row space={8}>
                 <Col span={{xs: 4}}>
                     <Form.Field htmlFor='startTime' label='计划开始时间'>
-                        <Input.DatePicker name='startTime' mode='date' value={moment().add(1, 'd').format('YYYY-MM-DD')}/>
+                        <Input.DatePicker name='startTime' mode='date' value={moment().format('YYYY-MM-DD')}/>
                     </Form.Field>
                 </Col>
 
                 <Col span={{xs: 4}}>
                     <Form.Field htmlFor='endTime' label='计划截止时间'>
-                        <Input.DatePicker name='endTime' mode='date' value={moment().add(1, 'd').format('YYYY-MM-DD')}/>
+                        <Input.DatePicker name='endTime' mode='date' value={moment().format('YYYY-MM-DD')}/>
                     </Form.Field>
                 </Col>
 
