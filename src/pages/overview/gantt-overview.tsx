@@ -92,7 +92,7 @@ export const Gantt = (props: GanttProps) => {
       isWeekend: boolean;
     }
 
-    const _desc = ['日', '一', '二', '三', '四', '五', '六'];
+    const _desc = ['一', '二', '三', '四', '五', '六', '日'];
     const _generate = (output: JSX.Element[], startX: number, days: IDay[], month: number) => {
       output.push(<text x={startX + days.length * CellWidth * 0.5} y={CellHeight * 0.5}>{month + 1}月</text>);
       output.push(<line x1={startX + days.length * CellWidth + 0.5} y1={0} x2={startX + days.length * CellWidth + 0.5} y2={CellHeight} fill='none' stroke='black' />);
@@ -125,7 +125,7 @@ export const Gantt = (props: GanttProps) => {
       days.push({
         day: cur.date(),
         weekday: _desc[weekday],
-        isWeekend: weekday == 6 || weekday == 0,
+        isWeekend: weekday == 5 || weekday == 6,
       });
     }
 
@@ -160,9 +160,9 @@ export const Gantt = (props: GanttProps) => {
       let projects = groups[k];
       let groupH = projects.taskSlice.length * CellHeight;
 
-      graphs.push(<foreignObject width="100" height={groupH * 0.5} y={posY + groupH * 0.5}><div className="svg-autoFit">{projects.name}</div></foreignObject>);
+      graphs.push(<foreignObject width="100" height={groupH * 0.5 + 8} y={posY + groupH * 0.5 - 8}><div className="svg-autoFit">{projects.name}</div></foreignObject>);
       graphs.push(<line x1={0} y1={posY + groupH + 0.5} x2={100} y2={posY + groupH + 0.5} stroke='black' fill='none' />);
-      graphs.push(<foreignObject width="60" height={groupH * 0.5} x={100} y={posY + groupH * 0.5}><div className="svg-autoFit">{projects.leader.replace(/，/g, '')}</div></foreignObject>);
+      graphs.push(<foreignObject width="60" height={groupH * 0.5 + 8} x={100} y={posY + groupH * 0.5 - 8}><div className="svg-autoFit">{projects.leader.replace(/，/g, '')}</div></foreignObject>);
       graphs.push(<line x1={100} y1={posY + groupH + 0.5} x2={180} y2={posY + groupH + 0.5} stroke='black' fill='none' />);
 
       projects.taskSlice.forEach((task, idx) => {
@@ -181,7 +181,7 @@ export const Gantt = (props: GanttProps) => {
         style={{
           width: 540,
           minWidth: 540,
-          maxHeight: `calc(100vh - ${200 + scollWidth}px)`,
+          maxHeight: `calc(100vh - ${206 + scollWidth}px)`,
           height: height,
           marginBottom: 16,
           overflow: 'hidden',

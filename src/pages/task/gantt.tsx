@@ -91,7 +91,7 @@ export const Gantt = (props: GanttProps) => {
             isWeekend: boolean;
         }
 
-        const _desc = ['日', '一', '二', '三', '四', '五', '六'];
+        const _desc = ['一', '二', '三', '四', '五', '六', '日'];
         const _generate = (output: JSX.Element[], startX: number, days: IDay[], month: number) => {
             output.push(<text x={startX + days.length * CellWidth * 0.5} y={CellHeight * 0.5}>{month+1}月</text>);
             output.push(<line x1={startX + days.length * CellWidth+0.5} y1={0} x2={startX + days.length * CellWidth+0.5} y2={CellHeight} fill='none' stroke='black'/>);
@@ -124,7 +124,7 @@ export const Gantt = (props: GanttProps) => {
             days.push({
                 day: cur.date(),
                 weekday: _desc[weekday],
-                isWeekend: weekday == 6 || weekday == 0,
+                isWeekend: weekday == 5 || weekday == 6,
             });
         }
 

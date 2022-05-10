@@ -273,7 +273,7 @@ export default function overview() {
 
   return (
     <div>
-      <div style={{ padding: '8px', borderBottom: '1px solid #E2E2E2' }}>
+      <div className='filter-bar' style={{ padding: '8px', borderBottom: '1px solid #E2E2E2' }}>
         <Row flex={{ align: 'middle', justify: 'center' }}>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>开始时间</label>
@@ -302,7 +302,7 @@ export default function overview() {
           </div>
         </Row>
       </div>
-      <div className='px-2 mt-3'>
+      <div className='px-2 mt-3' style={{height: 'calc(100vh - 1rem - 47px'}}>
         { useGantt ? <div className="overview-gantt">{gantt}</div> : <div className="overview-table">{table}</div> }
       </div>
     </div>

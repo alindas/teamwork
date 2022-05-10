@@ -1,6 +1,19 @@
+.filter-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 9;
+}
 
 .overview-table {
+  margin-top: 47px;
   cursor: default;
+}
+
+.overview-table > table > tbody {
+  height: calc(100% - 80px);
+  overflow: auto;
 }
 
 .overview-table ul {
@@ -36,6 +49,10 @@
 .overview-table li > span {
   text-indent: 0;
   overflow: hidden;
+}
+
+.overview-gantt {
+  margin-top: calc(1rem + 47px);
 }
 
 .overview-gantt .svg-autoFit {
