@@ -11,6 +11,11 @@
   cursor: default;
 }
 
+.overview-table .table th,
+.overview-table .table td {
+  vertical-align: baseline;
+}
+
 .overview-table > table > tbody {
   height: calc(100% - 80px);
   overflow: auto;
