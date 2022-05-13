@@ -248,7 +248,7 @@ export default function overview() {
       sheet.columns = taskSchema.map(item => ({
         header: item.dataIndex == 'state' ? item.label + '(0: 待办; 1: 进行; 2: 测试; 3: 完成)' : item.label,
         key: item.dataIndex,
-        width: (typeof item.width == 'number' ? item.width : parseInt(item.width)) * 3,
+        width: (typeof item.width == 'number' ? item.width : parseInt(item.width)) * 2,
         style: {
           alignment: {
             vertical: 'middle'

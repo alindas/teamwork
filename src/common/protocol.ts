@@ -3,12 +3,13 @@ type TaskSlice = {
     member: string,
     startTime: string,
     endTime: string,
-    state: 0 | 1 | 2 | 3
+    state: 0 | 1 | 2 | 3,
+    id?: number
 }
 /**
  * 概览区项目信息
  */
-export interface OverviewTask {
+export interface OverviewProject {
     /**
      * 项目序列号
      */
