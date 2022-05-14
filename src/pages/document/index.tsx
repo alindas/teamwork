@@ -250,6 +250,7 @@ export const DocumentPage = () => {
 
     const delDoc = (id: number) => {
         request({ url: `/api/document/${id}`, method: 'DELETE', success: fetchAll });
+        setCurrent(null);
     };
 
     return (
