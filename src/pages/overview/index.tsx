@@ -1,5 +1,6 @@
 import * as moment from "moment";
 import React, { useEffect, useState } from "react";
+import { Scrollbars } from 'react-custom-scrollbars-2';
 
 import { OverviewProject, User } from "../../common/protocol";
 import { request } from "../../common/request";
@@ -326,8 +327,8 @@ export default function overview() {
           </div>
         </Row>
       </div>
-      <div className='px-2 mt-3' style={{ height: 'calc(100vh - 1rem - 47px' }}>
-        {useGantt ? <div className="overview-gantt">{gantt}</div> : <div className="overview-table">{table}</div>}
+      <div className='px-2 mt-3' style={{ height: 'calc(100vh - 1rem)', overflow: 'hidden' }}>
+        {useGantt ? <div className="overview-gantt">{gantt}</div> : <div className="overview-table"><Scrollbars>{table}</Scrollbars></div>}
       </div>
     </div>
   );

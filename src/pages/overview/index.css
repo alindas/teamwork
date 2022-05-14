@@ -8,17 +8,14 @@
 
 .overview-table {
   margin-top: 47px;
+  height: calc(100% - 47px);
   cursor: default;
+  overflow: auto;
 }
 
 .overview-table .table th,
 .overview-table .table td {
   vertical-align: baseline;
-}
-
-.overview-table > table > tbody {
-  height: calc(100% - 80px);
-  overflow: auto;
 }
 
 .overview-table ul {
