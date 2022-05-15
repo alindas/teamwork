@@ -14,6 +14,8 @@ export const Avatar = (props: AvatarProps) => {
     const {src, shape, size, className, ...nativeProps} = props;
     const shapeClass = (shape||'circle') == 'circle' ? 'rounded' : 'r-1';
 
+    const [successLoad, setSuccessLoad] = React.useState(true);
+
     nativeProps.style = {
         ...nativeProps.style,
         width: size,
@@ -21,9 +23,9 @@ export const Avatar = (props: AvatarProps) => {
     }
 
     return (
-        (src && src.trim().length > 0) ? (
+        (successLoad && src && src.trim().length > 0) ? (
             <span {...makeClass('avatar', shapeClass, className)} {...nativeProps}>
-                <img src={src}/>
+                <img src={src} onError={() => setSuccessLoad(false)}/>
             </span>
         ):(
             <span {...makeClass('avatar', 'bg-darkgray', shapeClass, className)} {...nativeProps}>
