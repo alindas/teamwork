@@ -9,8 +9,14 @@ export const SharePage = () => {
     const [isUploading, setIsUploading] = React.useState<boolean>(false);
     const [progress, setProgress] = React.useState<number>(0);
     const [files, setFiles] = React.useState<Share[]>([]);
+    const isUnmounted = React.useRef(false);
 
-    React.useEffect(() => fetchAll(), []);
+    React.useEffect(() => {
+        fetchAll();
+        return () => {
+            isUnmounted.current = true;
+        }
+    }, []);
 
     const schema: TableColumn[] = [
         {label: '文件', dataIndex: 'name', align: 'left'},
@@ -27,7 +33,7 @@ export const SharePage = () => {
     ];
 
     const fetchAll = () => {
-        request({url: '/api/file/share/list', success: setFiles});
+        request({url: '/api/file/share/list', success: !isUnmounted.current && setFiles});
     };
 
     const uploader = (file: File) => {

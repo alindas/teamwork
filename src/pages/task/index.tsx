@@ -15,9 +15,13 @@ export const TaskPage = (props: {user: User}) => {
     const [isFilterVisible, setFilterVisible] = React.useState<boolean>(false);
     const [filter, setFilter] = React.useState<{p: number, m: number, n: string, me: number}>({p: -1, m: -1, n: '', me: -1});
     const [milestones, setMilestones] = React.useState<ProjectMilestone[]>([]);
+    const isUnmounted = React.useRef(false);
 
     React.useEffect(() => {
         fetchTasks();
+        return () => {
+            isUnmounted.current = true;
+        }
     }, []);
 
     React.useEffect(() => {
@@ -40,6 +44,9 @@ export const TaskPage = (props: {user: User}) => {
         request({
             url: '/api/task/mine',
             success: (data: TaskBrief[]) => {
+                if (isUnmounted.current) {
+                    return;
+                }
                 let projects: Project[] = [];
                 data.forEach(t => {
                     let idx = projects.findIndex(v => v.id == t.proj.id);

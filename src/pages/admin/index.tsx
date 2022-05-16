@@ -6,8 +6,14 @@ import {request} from '../../common/request';
 
 export const AdminPage = () => {
     const [users, setUsers] = React.useState<User[]>([]);
+    const isUnmounted = React.useRef(false);
 
-    React.useEffect(() => fetchUsers(), []);
+    React.useEffect(() => {
+        fetchUsers();
+        return () => {
+            isUnmounted.current = true;
+        }
+    }, []);
 
     const userSchema: TableColumn[] = [
         {label: '昵称', dataIndex: 'name'},
@@ -29,7 +35,7 @@ export const AdminPage = () => {
         request({
             url: '/admin/user/list',
             success: (data: User[]) => {
-                setUsers(data.sort((a, b) => a.account.localeCompare(b.account)));
+                !isUnmounted.current && setUsers(data.sort((a, b) => a.account.localeCompare(b.account)));
             }
         });
     };

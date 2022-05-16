@@ -12,6 +12,7 @@ export const DocumentPage = () => {
     const [current, setCurrent] = React.useState<Document>(null);
     const [isEditing, setEditing] = React.useState<boolean>(false);
     const [editContent, setEditContent] = React.useState<string>();
+    const isUnmounted = React.useRef(false);
 
     const nodeContextMenu: TreeNodeAction[] = [
         { label: '新建同级', onClick: n => addDoc(n.data ? findNode(n.data.parent) : n) },
@@ -25,6 +26,7 @@ export const DocumentPage = () => {
     React.useEffect(() => {
         fetchAll();
         return () => {
+            isUnmounted.current = true;
             if (editingStatus.current.isEditing) {
                 if (!confirm('当前文档编辑内容尚未保存，是否保存？')) {
                     restoreDocBeforeLeave(editingStatus.current.article);
@@ -37,6 +39,9 @@ export const DocumentPage = () => {
         request({
             url: '/api/document/list',
             success: (data: Document[]) => {
+                if (isUnmounted.current) {
+                    return;
+                }
                 if (data.length == 0) {
                     setNodes([{ label: '右键新建文档', nodeId: '-1', children: [] }]);
                     return;

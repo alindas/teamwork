@@ -31,6 +31,7 @@ export default function overview() {
   const [filterTasks, setFilterTasks] = useState<OverviewProject[] | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [useGantt, setUseGantt] = React.useState<boolean>(false);
+  const isUnmounted = React.useRef(false);
 
   const taskSchema: TableColumn[] = [
     { label: '项目', dataIndex: 'name', width: '10%' },
@@ -79,13 +80,16 @@ export default function overview() {
   useEffect(() => {
     fetchUsers();
     fetchTasks();
+    return () => {
+      isUnmounted.current = true;
+    }
   }, []);
 
   const fetchUsers = () => {
     request({
       url: '/api/user/list',
       success: (data: User[]) => {
-        setUsers(data);
+        !isUnmounted.current && setUsers(data);
       }
     });
   };
@@ -118,6 +122,9 @@ export default function overview() {
     request({
       url: '/api/project/totalDetail',
       success: (data: any[]) => {
+        if (isUnmounted.current) {
+          return;
+        }
         const formatData = data.map(task => {
           return ({
             id: task.id,

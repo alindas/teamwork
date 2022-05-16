@@ -33,15 +33,22 @@ export const ProjectPage = (props: { user: User }) => {
     const [projs, setProjs] = useState<Project[]>([]);
     const [page, setPage] = useState<JSX.Element>();
     const [currentProject, setCurrentProject] = useState<{ project: Project, isAdmin?: boolean, user?: User, index: number }>({ project: null, isAdmin: false, index: -1 });
+    const isUnmounted = React.useRef(false);
 
     useEffect(() => {
         fetchProjs();
+        return () => {
+            isUnmounted.current = true;
+        }
     }, []);
 
     const fetchProjs = () => {
         setPage(null);
         request({
             url: '/api/project/mine', success: function (data: Project[]) {
+                if (isUnmounted.current) {
+                    return;
+                }
                 data.sort((a: Project, b: Project) => b.id - a.id);
                 setProjs(data);
             }
