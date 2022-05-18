@@ -6,8 +6,9 @@ import {request} from '../../common/request';
 
 import {Board} from './board';
 import {Gantt} from './gantt';
+import { useSelector } from 'react-redux';
 
-export const TaskPage = (props: {user: User}) => {
+export const TaskPage = () => {
     const [useGantt, setUseGantt] = React.useState<boolean>(false);
     const [tasks, setTasks] = React.useState<TaskBrief[]>([]);
     const [visibleTasks, setVisibleTask] = React.useState<TaskBrief[]>([]);
@@ -16,6 +17,7 @@ export const TaskPage = (props: {user: User}) => {
     const [filter, setFilter] = React.useState<{p: number, m: number, n: string, me: number}>({p: -1, m: -1, n: '', me: -1});
     const [milestones, setMilestones] = React.useState<ProjectMilestone[]>([]);
     const isUnmounted = React.useRef(false);
+    const user: User = useSelector((state: any) => state.user);
 
     React.useEffect(() => {
         fetchTasks();
@@ -33,7 +35,7 @@ export const TaskPage = (props: {user: User}) => {
             if (filter.p != -1 && t.proj.id != filter.p) return;
 
             const roles: number[] = [t.creator.id, t.developer.id, t.tester.id];
-            if (filter.me != -1 && roles[filter.me] != props.user.id) return;
+            if (filter.me != -1 && roles[filter.me] != user.id) return;
             ret.push(t);
         });
 

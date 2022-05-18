@@ -11,6 +11,7 @@ import { Manager } from './manager';
 import { Milestones } from './milestones';
 import { Weeks } from './week';
 import './index.css';
+import { useSelector } from 'react-redux';
 
 const ColorPool = [
     'Crimson',
@@ -29,11 +30,12 @@ const ColorPool = [
     'Maroon',
 ]
 
-export const ProjectPage = (props: { user: User }) => {
+export const ProjectPage = () => {
     const [projs, setProjs] = useState<Project[]>([]);
     const [page, setPage] = useState<JSX.Element>();
     const [currentProject, setCurrentProject] = useState<{ project: Project, isAdmin?: boolean, user?: User, index: number }>({ project: null, isAdmin: false, index: -1 });
     const isUnmounted = React.useRef(false);
+    const user: User = useSelector((state: any) => state.user);
 
     useEffect(() => {
         fetchProjs();
@@ -80,7 +82,7 @@ export const ProjectPage = (props: { user: User }) => {
             title: '新建项目',
             body: (
                 <Form style={{ width: 400 }} form={() => { form = Form.useForm(validates); return form }} onSubmit={submit}>
-                    <input name='admin' value={props.user.id} hidden />
+                    <input name='admin' value={user.id} hidden />
 
                     <Form.Field htmlFor='name' label='项目名'>
                         <Input name='name' />
@@ -104,7 +106,7 @@ export const ProjectPage = (props: { user: User }) => {
     const projectList = projs.length == 0 ? <Empty label='您还未加入任何项目' /> : (
         <Row space={8} style={{ padding: '10px 20px' }}>
             {projs.map((project, i) => {
-                const target = project.members.find(member => member.user.id == props.user.id);
+                const target = project.members.find(member => member.user.id == user.id);
                 let isAdmin = target !== undefined ? target.isAdmin : false;
                 return (
                     <Col span={{ xs: 2 }} style={{ minWidth: 302 }} key={project.id}>
@@ -129,7 +131,7 @@ export const ProjectPage = (props: { user: User }) => {
                                 className='cloak'
                             >
                                 <div onClick={() => { setPage(<Summary proj={project} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 1 }) }}><span>项目概览</span></div>
-                                <div onClick={() => { setPage(<Tasks proj={project} isAdmin={isAdmin} user={props.user} />); setCurrentProject({ project, isAdmin, user: props.user, index: 2 }) }}><span>任务列表</span></div>
+                                <div onClick={() => { setPage(<Tasks proj={project} isAdmin={isAdmin} user={user} />); setCurrentProject({ project, isAdmin, user, index: 2 }) }}><span>任务列表</span></div>
                                 <div onClick={() => { setPage(<Milestones proj={project} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 3 }) }}><span>里程计划</span></div>
                                 <div onClick={() => { setPage(<Weeks pid={project.id} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 4 }) }}><span>周报统计</span></div>
                                 {isAdmin && <div onClick={() => { setPage(<Manager pid={project.id} onDelete={fetchProjs} />); setCurrentProject({ project, isAdmin, index: 5 }) }}><span>项目管理</span></div>}
