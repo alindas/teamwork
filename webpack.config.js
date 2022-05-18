@@ -62,7 +62,8 @@ module.exports = {
       {
         test: /\.(woff|woff2|eot|otf|ttf)$/,
         exclude: /node_modules/,
-        use: ['file-loader']
+        type: 'asset/resource',
+        // use: ['file-loader']
       },
     ]
   },
