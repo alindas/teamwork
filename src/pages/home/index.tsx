@@ -30,7 +30,7 @@ export interface MainMenu {
 export const Home = () => {
     const [currentMenu, setCurrentMenu] = React.useState('');
     const [notices, setNotices] = React.useState<Notice[]>([]);
-    const user: User = useSelector((state: any) => state.user);
+    const user: User = useSelector((state: any) => state.user.userInfo);
     const dispatch = useDispatch();
 
     React.useEffect(() => {
