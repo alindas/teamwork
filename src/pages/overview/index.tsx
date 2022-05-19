@@ -82,9 +82,6 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
     },
   ];
 
-  const gantt = React.useMemo(() => <Gantt projects={filterTasks ?? []} onModified={fetchTasks} />, [filterTasks]);
-  const table = React.useMemo(() => <Table dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'} />, [filterTasks]);
-
   useEffect(() => {
     fetchUsers();
     fetchTasks();
@@ -170,18 +167,6 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
       case 3: return <Badge theme='success'>已完成</Badge>; break;
       default: return <Badge>待办中</Badge>;
     }
-  }
-
-  const renderTable = (record: any, key: string) => {
-    return (
-      <ul className={key === 'describe' ? 'describe-item' : ''}>
-        {record.map((task: any, i: number) =>
-          <li key={i} >
-            {key == 'state' ? translateProjectStatus(task[key]) : task[key]}
-          </li>
-        )}
-      </ul>
-    )
   }
 
   const handleStartDateChange = (date: string) => {
@@ -315,6 +300,21 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
           })
         })
     }
+  }
+
+  const gantt = React.useMemo(() => <Gantt projects={filterTasks ?? []} onModified={fetchTasks} onRouteChange={jumpToProject}/>, [filterTasks]);
+  const table = React.useMemo(() => <Table dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'} />, [filterTasks]);
+
+  const renderTable = (record: any, key: string) => {
+    return (
+      <ul className={key === 'describe' ? 'describe-item' : ''}>
+        {record.map((task: any, i: number) =>
+          <li key={i} >
+            {key == 'state' ? translateProjectStatus(task[key]) : task[key]}
+          </li>
+        )}
+      </ul>
+    )
   }
 
   return (
