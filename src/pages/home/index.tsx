@@ -82,7 +82,7 @@ export const Home = () => {
                     </div>
                 </div>
 
-                <Menu defaultActive='task' theme='dark'>
+                <Menu defaultActive={window.location.hash.slice(2)} theme='dark'>
                     {user && menus.map(m => {
                         if (m.needAdmin && !user.isSu) return null;
 
@@ -111,6 +111,7 @@ export const Home = () => {
                         <Route path="/document" ><DocumentPage /></Route>
                         <Route path="/share" ><SharePage /></Route>
                         <Route path="/admin" ><AdminPage /></Route>
+                        <Route ><TaskPage /></Route>
                     </Switch>
                 </HashRouter>
             </Layout.Content>

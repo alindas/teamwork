@@ -34,7 +34,11 @@ export default function overview() {
   const isUnmounted = React.useRef(false);
 
   const taskSchema: TableColumn[] = [
-    { label: '项目', dataIndex: 'name', width: '10%' },
+    { label: '项目',
+      dataIndex: 'name',
+      width: '10%',
+      renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'describe'),
+    },
     { label: '完成时间', dataIndex: 'deadline', style: { wordBreak: 'break-all' }, width: '10%' },
     { label: '负责人', dataIndex: 'leader', width: '10%' },
     {
