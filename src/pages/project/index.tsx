@@ -3,6 +3,7 @@ import {
     Switch,
     Route,
     HashRouter,
+    Redirect,
 } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -217,6 +218,7 @@ export const ProjectPage = () => {
                         <Route path="/project/milestones"><Milestones /></Route>
                         <Route path="/project/weeks"><Weeks /></Route>
                         <Route path="/project/manager"><Manager onDelete={fetchProjs}/></Route>
+                        <Route ><Redirect to="/project" /></Route>
                     </Switch>
                 </HashRouter>
             </Layout.Content>

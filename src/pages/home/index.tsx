@@ -28,6 +28,7 @@ export interface MainMenu {
 };
 
 export const Home = () => {
+    const [currentMenu, setCurrentMenu] = React.useState('');
     const [notices, setNotices] = React.useState<Notice[]>([]);
     const user: User = useSelector((state: any) => state.user);
     const dispatch = useDispatch();
@@ -47,7 +48,7 @@ export const Home = () => {
     };
 
     const changeMenu = (route: string) => {
-        // window.history.pushState({}, '', '#/' + route);
+        setCurrentMenu(route);
         window.location.href = '#/' + route;
     }
 
@@ -82,7 +83,7 @@ export const Home = () => {
                     </div>
                 </div>
 
-                <Menu defaultActive={window.location.hash.split('/')[1]} theme='dark'>
+                <Menu defaultActive={currentMenu || window.location.hash.split('/')[1]} theme='dark'>
                     {user && menus.map(m => {
                         if (m.needAdmin && !user.isSu) return null;
 
@@ -105,7 +106,7 @@ export const Home = () => {
                 <HashRouter>
                     <Switch>
                         <Route path="/" exact><Redirect to="/task" /></Route>
-                        <Route path="/overview" ><OverviewPage /></Route>
+                        <Route path="/overview" ><OverviewPage changeRoute={setCurrentMenu}/></Route>
                         <Route path="/task" ><TaskPage /></Route>
                         <Route path="/project" ><ProjectPage /></Route>
                         <Route path="/document" ><DocumentPage /></Route>

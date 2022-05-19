@@ -24,8 +24,12 @@ interface MenuContextData {
 
 export const Menu = (props: MenuProps) => {
     const {mode, theme, width, defaultActive, className, children, ...nativeProps} = props;
-    const [activeItem, setActiveItem] = React.useState<string>(defaultActive);
+    const [activeItem, setActiveItem] = React.useState<string>();
     const [menuId] = React.useState<string>(props.id || makeId());
+
+    React.useEffect(() => {
+        setActiveItem(defaultActive);
+    }, [defaultActive])
 
     const context: MenuContextData = {
         menuId: menuId,
