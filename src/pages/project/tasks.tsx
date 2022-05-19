@@ -95,7 +95,7 @@ export const Tasks = () => {
 
     return (
         <div>
-            <div style={{ padding: '0 8px', borderBottom: '1px solid #E2E2E2' }}>
+            { !!project && <div style={{ padding: '0 8px', borderBottom: '1px solid #E2E2E2' }}>
                 <Row flex={{ align: 'middle' }}>
                     <Row flex={{ align: 'middle', justify: 'space-between' }} style={{flex: 1}}>
                         <label className='text-bold fg-muted' style={{ padding: "8px 0", fontSize: '1.2em' }}>{`【${project.name}】任务列表`}</label>
@@ -131,7 +131,7 @@ export const Tasks = () => {
 
                     <Button className='ml-3' size='sm' onClick={() => setFilter({ mem: -1, mid: -1, n: '' })}>重置</Button>
                 </div>
-            </div>
+            </div> }
 
             <div className='px-2 mt-3'>
                 {isGantt ? gantt : board}

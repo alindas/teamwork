@@ -46,6 +46,9 @@ export const ProjectPage = () => {
 
     useEffect(() => {
         fetchProjs();
+        if (projectId !== -1 && !currentMenu) {
+            setCurrentMenu(window.location.hash.split('/')[2]);
+        }
         return () => {
             isUnmounted.current = true;
         }
@@ -61,7 +64,7 @@ export const ProjectPage = () => {
                 setProjs(data);
                 // 如果进入项目页时 redux 上存在 projectId 则证明需要进入子页
                 if (projectId != -1) {
-                    for (let project of projs) {
+                    for (let project of data) {
                         if (project.id == projectId) {
                             dispatch(modifyProject({
                                 project,
