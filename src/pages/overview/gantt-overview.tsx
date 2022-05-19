@@ -62,8 +62,6 @@ export const Gantt = (props: GanttProps) => {
     document.body.appendChild(inner);
     setScrollWidth(inner.offsetWidth - inner.clientWidth);
     document.body.removeChild(inner);
-    console.log(props);
-
     makeSummary(counter);
     makeTimeline(start, end);
     makeBrief(groups, totalTask);
@@ -162,11 +160,11 @@ export const Gantt = (props: GanttProps) => {
       let projects = groups[k];
       let groupH = projects.taskSlice.length * CellHeight;
 
-      graphs.push(<foreignObject width="100" height={groupH * 0.5 + 8} y={posY + groupH * 0.5 - 8}>
-        <div className="svg-autoFit" onClick={() => props.onRouteChange(projects.id)}>{projects.name}</div>
+      graphs.push(<foreignObject width="100" height={groupH} y={posY}>
+        <div className="svg-autoFit" onClick={() => props.onRouteChange(projects.id)}><span>{projects.name}</span></div>
       </foreignObject>);
       graphs.push(<line x1={0} y1={posY + groupH + 0.5} x2={100} y2={posY + groupH + 0.5} stroke='black' fill='none' />);
-      graphs.push(<foreignObject width="60" height={groupH * 0.5 + 8} x={100} y={posY + groupH * 0.5 - 8}><div className="svg-autoFit">{projects.leader.replace(/，/g, '')}</div></foreignObject>);
+      graphs.push(<foreignObject width="60" height={groupH} x={100} y={posY}><div className="svg-autoFit"><span>{projects.leader.replace(/，/g, '')}</span></div></foreignObject>);
       graphs.push(<line x1={100} y1={posY + groupH + 0.5} x2={180} y2={posY + groupH + 0.5} stroke='black' fill='none' />);
 
       projects.taskSlice.forEach((task, idx) => {
