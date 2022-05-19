@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 
 import { Button, Icon, Row, Input, Drawer } from '../../components';
 import { TaskBrief, Project, User } from '../../common/protocol';
@@ -9,18 +10,23 @@ import { Creator } from '../task/creator';
 import { Board } from '../task/board';
 import { Gantt } from '../task/gantt';
 
-export const Tasks = (props: { proj: Project, isAdmin: boolean, user: User }) => {
-    const { proj, isAdmin, user } = props;
-
+export const Tasks = () => {
     const [isGantt, setIsGantt] = React.useState<boolean>(false);
     const [isFilterVisible, setFilterVisible] = React.useState<boolean>(false);
     const [tasks, setTasks] = React.useState<TaskBrief[]>([]);
     const [visibleTasks, setVisibleTask] = React.useState<TaskBrief[]>([]);
     const [filter, setFilter] = React.useState<{ mem: number, mid: number, n: string }>({ mem: -1, mid: -1, n: '' });
+    const {projectId, project, isAdmin} : {projectId: number, project: Project | null, isAdmin: boolean} =
+        useSelector((state: any) => state.project);
+    const user: User = useSelector((state: any) => state.user);
 
     React.useEffect(() => {
-        fetchTasks();
-    }, [proj]);
+        if (projectId == -1) {
+            window.location.href = '#/project';
+        } else {
+            fetchTasks();
+        }
+    }, [projectId]);
 
     React.useEffect(() => {
         let ret: TaskBrief[] = [];
@@ -39,7 +45,7 @@ export const Tasks = (props: { proj: Project, isAdmin: boolean, user: User }) =>
     }, [tasks, filter]);
 
     const fetchTasks = () => {
-        request({ url: `/api/task/project/${proj.id}`, success: setTasks });
+        request({ url: `/api/task/project/${projectId}`, success: setTasks });
     };
 
     const publishTask = () => {
@@ -48,7 +54,7 @@ export const Tasks = (props: { proj: Project, isAdmin: boolean, user: User }) =>
         closer = Drawer.open({
             width: 800,
             header: '发布任务',
-            body: <div className='pt-2'><Creator proj={proj} onDone={() => { closer(); fetchTasks() }} /></div>,
+            body: <div className='pt-2'><Creator proj={project} onDone={() => { closer(); fetchTasks() }} /></div>,
         });
     };
 
@@ -92,7 +98,7 @@ export const Tasks = (props: { proj: Project, isAdmin: boolean, user: User }) =>
             <div style={{ padding: '0 8px', borderBottom: '1px solid #E2E2E2' }}>
                 <Row flex={{ align: 'middle' }}>
                     <Row flex={{ align: 'middle', justify: 'space-between' }} style={{flex: 1}}>
-                        <label className='text-bold fg-muted' style={{ padding: "8px 0", fontSize: '1.2em' }}>{`【${proj.name}】任务列表`}</label>
+                        <label className='text-bold fg-muted' style={{ padding: "8px 0", fontSize: '1.2em' }}>{`【${project.name}】任务列表`}</label>
                         <div>
                             <Button size='sm' onClick={() => fetchTasks()}><Icon className='mr-1' type='reload' />刷新</Button>
                             <Button size='sm' onClick={() => setIsGantt(prev => !prev)}><Icon className='mr-1' type='view' />{isGantt ? '看板模式' : '甘特图'}</Button>
@@ -106,7 +112,7 @@ export const Tasks = (props: { proj: Project, isAdmin: boolean, user: User }) =>
                         <label className='mr-1'>选择成员</label>
                         <Input.Select style={{ width: 150 }} value={filter.mem} onChange={handleMemberChange}>
                             <option key={'none'} value={-1}>无要求</option>
-                            {proj.members.map(m => <option key={m.user.id} value={m.user.id}>【{ProjectRole[m.role]}】{m.user.name}</option>)}
+                            {project.members.map(m => <option key={m.user.id} value={m.user.id}>【{ProjectRole[m.role]}】{m.user.name}</option>)}
                         </Input.Select>
                     </div>
 
@@ -114,7 +120,7 @@ export const Tasks = (props: { proj: Project, isAdmin: boolean, user: User }) =>
                         <label className='mr-1'>里程碑</label>
                         <Input.Select style={{ width: 150 }} value={filter.mid} onChange={handleMilestoneChange}>
                             <option key={'none'} value={-1}>无要求</option>
-                            {proj.milestones.map((m, i) => <option key={i} value={m.id}>{m.name}</option>)}
+                            {project.milestones.map((m, i) => <option key={i} value={m.id}>{m.name}</option>)}
                         </Input.Select>
                     </div>
 

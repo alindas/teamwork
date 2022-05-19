@@ -13,6 +13,7 @@ import { TaskStatus } from '../../common/consts';
 import { Viewer } from '../task/viewer';
 import { Creator } from '../task/creator';
 import { MDEditor, MDViewer } from '../../components/bytemd';
+import { useSelector } from 'react-redux';
 
 interface MilestoneChartElement {
     state: number;
@@ -28,9 +29,10 @@ interface ViewMilestone {
     summary: MilestoneChartElement[];
 }
 
-export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
+export const Milestones = () => {
     const [milestones, setMilestones] = React.useState<ProjectMilestone[]>([]);
     const [view, setView] = React.useState<ViewMilestone>();
+    const {projectId, project, isAdmin} = useSelector((state: any) => state.project);
 
     const validator: { [k: string]: FormFieldValidator } = {
         name: { required: '里程碑名称不可为空' },
@@ -38,11 +40,17 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
         endTime: { required: '请设置计划结束时间' },
     };
 
-    React.useEffect(() => fetchMilestones(), [props]);
+    React.useEffect(() => {
+        if (projectId == -1) {
+            window.location.href = '#/project';
+        } else {
+            fetchMilestones();
+        }
+    }, [projectId]);
 
     const fetchMilestones = () => {
         request({
-            url: `/api/project/${props.proj.id}/milestone/list`, success: (data: ProjectMilestone[]) => {
+            url: `/api/project/${projectId}/milestone/list`, success: (data: ProjectMilestone[]) => {
                 data.sort((a, b) => b.id - a.id)
                 setMilestones(data);
                 if (data.length > 0) {
@@ -60,7 +68,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
         closer = Drawer.open({
             width: 800,
             header: '发布任务',
-            body: <div className='pt-2'><Creator proj={props.proj} milestone={m} onDone={() => { closer(); viewMilestone(m) }} /></div>,
+            body: <div className='pt-2'><Creator proj={project} milestone={m} onDone={() => { closer(); viewMilestone(m) }} /></div>,
         });
     };
 
@@ -73,7 +81,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
             console.dir(ev.currentTarget);
 
             request({
-                url: `/api/project/${props.proj.id}/milestone`,
+                url: `/api/project/${projectId}/milestone`,
                 method: 'POST',
                 data: new FormData(ev.currentTarget),
                 success: () => { closer(); fetchMilestones() }
@@ -109,7 +117,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
         const submit = (ev: React.FormEvent<HTMLFormElement>) => {
             ev.preventDefault();
             request({
-                url: `/api/project/${props.proj.id}/milestone/${m.id}`,
+                url: `/api/project/${projectId}/milestone/${m.id}`,
                 method: 'PUT',
                 data: new FormData(ev.currentTarget),
                 success: () => { closer(); fetchMilestones() }
@@ -144,7 +152,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
             body: <div className='my-2'>确定要删除里程碑【{m.name}】吗（相关任务的里程碑会被置空）？</div>,
             onOk: () => {
                 request({
-                    url: `/api/project/${props.proj.id}/milestone/${m.id}`,
+                    url: `/api/project/${projectId}/milestone/${m.id}`,
                     method: 'DELETE',
                     success: fetchMilestones
                 });
@@ -185,7 +193,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
         <Layout style={{ height: '100vh' }}>
             <Layout.Sider width={300} theme='light' style={{ background: 'white' }}>
                 <div style={{ padding: '8px 16px', borderBottom: '1px solid #e2e2e2' }}>
-                    {props.isAdmin ? (
+                    {isAdmin ? (
                         <Row flex={{ align: 'middle', justify: 'space-between' }}>
                             <label className='text-bold fg-muted' style={{ fontSize: '1.2em' }}>
                                 <Icon type='idcard' className='mr-1' />里程计划
@@ -218,7 +226,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                                     bordered
                                     shadowed>
                                     <span>
-                                        {props.isAdmin ? [
+                                        {isAdmin ? [
                                             <a key='edit' className='link' onClick={ev => { ev.preventDefault(); ev.stopPropagation(); editMilestone(m) }}>编辑</a>,
                                             <div key='d-0' className='divider-v' />,
                                             <a key='publish' className='link' onClick={ev => { ev.preventDefault(); ev.stopPropagation(); publishTask(m) }}>发布任务</a>,
@@ -283,7 +291,7 @@ export const Milestones = (props: { proj: Project, isAdmin: boolean }) => {
                                     <p key={t.id}>
                                         {(t.state < 3 && moment(t.endTime).isBefore()) && <Icon type='warning-circle' className='fg-danger mr-1' />}
                                         <Icon type={TaskStatus[t.state].icon} style={{ color: TaskStatus[t.state].color }} />
-                                        <a href='#' className='fg-info ml-1' onClick={() => Viewer.open(t.id, props.isAdmin ? () => viewMilestone(view.target) : null)}>{t.name}</a>
+                                        <a href='#' className='fg-info ml-1' onClick={() => Viewer.open(t.id, isAdmin ? () => viewMilestone(view.target) : null)}>{t.name}</a>
                                         <small className='ml-1 text-bold'>
                                             {t.creator.name}<Icon type='right' />{t.developer.name}<Icon type='right' />{t.tester.name}
                                         </small>

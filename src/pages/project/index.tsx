@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import {
+    Switch,
+    Route,
+    HashRouter,
+} from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
 
-import { Layout, Icon, Menu, Empty, Badge, Row, Button, FormProxy, FormFieldValidator, Modal, Form, Input, Col, Card } from '../../components';
+import { Layout, Icon, Empty, Badge, Row, Button, FormProxy, FormFieldValidator, Modal, Form, Input, Col, Card } from '../../components';
 import { Project, User } from '../../common/protocol';
 import { request } from '../../common/request';
 import { ProjectRole } from '../../common/consts';
@@ -11,7 +17,7 @@ import { Manager } from './manager';
 import { Milestones } from './milestones';
 import { Weeks } from './week';
 import './index.css';
-import { useSelector } from 'react-redux';
+import { modifyProject, modifyProjectId } from '../../model/reducers/project';
 
 const ColorPool = [
     'Crimson',
@@ -32,10 +38,11 @@ const ColorPool = [
 
 export const ProjectPage = () => {
     const [projs, setProjs] = useState<Project[]>([]);
-    const [page, setPage] = useState<JSX.Element>();
-    const [currentProject, setCurrentProject] = useState<{ project: Project, isAdmin?: boolean, user?: User, index: number }>({ project: null, isAdmin: false, index: -1 });
+    const [currentMenu, setCurrentMenu] = useState('');
     const isUnmounted = React.useRef(false);
-    const user: User = useSelector((state: any) => state.user);
+    const dispatch = useDispatch();
+    const user: User = useSelector((state: any) => state.user.userInfo);
+    const {projectId, isAdmin} = useSelector((state: any) => state.project);
 
     useEffect(() => {
         fetchProjs();
@@ -45,7 +52,6 @@ export const ProjectPage = () => {
     }, []);
 
     const fetchProjs = () => {
-        setPage(null);
         request({
             url: '/api/project/mine', success: function (data: Project[]) {
                 if (isUnmounted.current) {
@@ -53,6 +59,18 @@ export const ProjectPage = () => {
                 }
                 data.sort((a: Project, b: Project) => b.id - a.id);
                 setProjs(data);
+                // 如果进入项目页时 redux 上存在 projectId 则证明需要进入子页
+                if (projectId != -1) {
+                    for (let project of projs) {
+                        if (project.id == projectId) {
+                            dispatch(modifyProject({
+                                project,
+                                isAdmin: project.members.find(member => member.user.id == user.id)
+                            }));
+                            break;
+                        }
+                    }
+                }
             }
         });
     };
@@ -100,14 +118,30 @@ export const ProjectPage = () => {
     };
 
     const backOff = () => {
-        setPage(null);
+        dispatch(modifyProjectId(-1));
+        window.location.href = '#/project';
+    };
+
+    const enterSubItem = (item: string, project: Project, isAdmin: boolean) => {
+        setCurrentMenu(item);
+        dispatch(modifyProject({
+            projectId: project.id,
+            project,
+            isAdmin
+        }));
+        window.location.href = '#/project/' + item;
+    }
+
+    const switchSubItem = (item: string) => {
+        window.location.href = '#/project/' + item;
+        setCurrentMenu(item);
     }
 
     const projectList = projs.length == 0 ? <Empty label='您还未加入任何项目' /> : (
         <Row space={8} style={{ padding: '10px 20px' }}>
             {projs.map((project, i) => {
                 const target = project.members.find(member => member.user.id == user.id);
-                let isAdmin = target !== undefined ? target.isAdmin : false;
+                let isAdminSelf = target !== undefined ? target.isAdmin : false;
                 return (
                     <Col span={{ xs: 2 }} style={{ minWidth: 302 }} key={project.id}>
                         <Card
@@ -123,18 +157,18 @@ export const ProjectPage = () => {
                                     <span style={{ color: '#1a2a3a', fontSize: '16px', fontWeight: '600' }}>{project.name}</span>
                                 </div>
                                 <div>
-                                    <Badge theme='info'>{isAdmin ? '管理员' : '成员'}</Badge>
+                                    <Badge theme='info'>{isAdminSelf ? '管理员' : '成员'}</Badge>
                                 </div>
                             </Row>
                             <Row
                                 flex={{ justify: 'space-between' }}
                                 className='cloak'
                             >
-                                <div onClick={() => { setPage(<Summary proj={project} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 1 }) }}><span>项目概览</span></div>
-                                <div onClick={() => { setPage(<Tasks proj={project} isAdmin={isAdmin} user={user} />); setCurrentProject({ project, isAdmin, user, index: 2 }) }}><span>任务列表</span></div>
-                                <div onClick={() => { setPage(<Milestones proj={project} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 3 }) }}><span>里程计划</span></div>
-                                <div onClick={() => { setPage(<Weeks pid={project.id} isAdmin={isAdmin} />); setCurrentProject({ project, isAdmin, index: 4 }) }}><span>周报统计</span></div>
-                                {isAdmin && <div onClick={() => { setPage(<Manager pid={project.id} onDelete={fetchProjs} />); setCurrentProject({ project, isAdmin, index: 5 }) }}><span>项目管理</span></div>}
+                                <div onClick={() => enterSubItem('summary', project, isAdminSelf)}><span>项目概览</span></div>
+                                <div onClick={() => enterSubItem('tasks', project, isAdminSelf)}><span>任务列表</span></div>
+                                <div onClick={() => enterSubItem('milestones', project, isAdminSelf)}><span>里程计划</span></div>
+                                <div onClick={() => enterSubItem('weeks', project, isAdminSelf)}><span>周报统计</span></div>
+                                {isAdminSelf && <div onClick={() => enterSubItem('manager', project, isAdminSelf)}><span>项目管理</span></div>}
                             </Row>
                         </Card>
                     </Col>
@@ -145,7 +179,7 @@ export const ProjectPage = () => {
 
     return (
         <Layout style={{ width: '100%', height: '100%' }}>
-            <div style={!!page ? { height: 0 } : {}} className='project-header'>
+            <div style={projectId == -1 ? {} : { height: 0 }} className='project-header'>
                 <Row flex={{ align: 'middle' }}>
                     <label className='text-bold fg-muted' style={{ padding: '8px 16px', fontSize: '1.2em' }}><Icon type='pie-chart' className='mr-2' />项目列表</label>
                     <Button theme='link' size='sm' onClick={addProj}>
@@ -153,26 +187,35 @@ export const ProjectPage = () => {
                     </Button>
                 </Row>
             </div>
-            <div style={!!page ? {} : { height: 0 }} className='project-submenu'>
+            <div style={projectId !== -1 ? {} : { height: 0 }} className='project-submenu'>
                 <Button theme='link' size='sm' onClick={backOff}>
                     <Icon type='backward' />返回
                 </Button>
                 {
-                    currentProject.project !== null &&
+                    projectId !== -1 &&
                     <Row
                         flex={{ justify: 'space-between' }}
-                        className={`project-submenu-box current-submenu-${currentProject.index}`}
+                        className={`project-submenu-box current-submenu-${currentMenu}`}
                     >
-                        <div onClick={() => { setPage(<Summary proj={currentProject.project} isAdmin={currentProject.isAdmin} />); setCurrentProject({ ...currentProject, index: 1 }) } }><span>项目概览</span></div>
-                        <div onClick={() => { setPage(<Tasks proj={currentProject.project} isAdmin={currentProject.isAdmin} user={currentProject.user} />); setCurrentProject({ ...currentProject, index: 2 })} }><span>任务列表</span></div>
-                        <div onClick={() => { setPage(<Milestones proj={currentProject.project} isAdmin={currentProject.isAdmin} />); setCurrentProject({ ...currentProject, index: 3 })} }><span>里程计划</span></div>
-                        <div onClick={() => { setPage(<Weeks pid={currentProject.project.id} isAdmin={currentProject.isAdmin} />); setCurrentProject({ ...currentProject, index: 4 })} }><span>周报统计</span></div>
-                        {currentProject.isAdmin && <div onClick={() => { setPage(<Manager pid={currentProject.project.id} onDelete={fetchProjs} />); setCurrentProject({ ...currentProject, index: 5 })} }><span>项目管理</span></div>}
+                        <div onClick={() => switchSubItem('summary')}><span>项目概览</span></div>
+                        <div onClick={() => switchSubItem('tasks')}><span>任务列表</span></div>
+                        <div onClick={() => switchSubItem('milestones')}><span>里程计划</span></div>
+                        <div onClick={() => switchSubItem('weeks')}><span>周报统计</span></div>
+                        {isAdmin && <div onClick={() => switchSubItem('manager')}><span>项目管理</span></div>}
                     </Row>
                 }
             </div>
             <Layout.Content>
-                {page || projectList}
+                <HashRouter>
+                    <Switch>
+                        <Route path="/project" exact>{projectList}</Route>
+                        <Route path="/project/summary"><Summary /></Route>
+                        <Route path="/project/tasks"><Tasks /></Route>
+                        <Route path="/project/milestones"><Milestones /></Route>
+                        <Route path="/project/weeks"><Weeks /></Route>
+                        <Route path="/project/manager"><Manager onDelete={fetchProjs}/></Route>
+                    </Switch>
+                </HashRouter>
             </Layout.Content>
         </Layout>
     );

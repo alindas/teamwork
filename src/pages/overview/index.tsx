@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from 'react-custom-scrollbars-2';
+import { useDispatch } from "react-redux";
 
 import { OverviewProject, User } from "../../common/protocol";
 import { request } from "../../common/request";
@@ -8,6 +9,7 @@ import { Badge, Button, Icon, Input, Notification, Row, Table, TableColumn } fro
 import { Gantt } from "./gantt-overview";
 import './index.css';
 import { downloadFile } from '../../util/common'
+import { modifyProjectId } from "../../model/reducers/project";
 
 const { Select, DatePicker } = Input;
 
@@ -32,12 +34,14 @@ export default function overview() {
   const [users, setUsers] = useState<User[]>([]);
   const [useGantt, setUseGantt] = React.useState<boolean>(false);
   const isUnmounted = React.useRef(false);
+  const dispatch = useDispatch();
 
   const taskSchema: TableColumn[] = [
     { label: '项目',
       dataIndex: 'name',
       width: '10%',
-      renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'describe'),
+      renderer: (record: any, _: number, __: number) =>
+        <span className='project-title' onClick={() => jumpToProject(record.id)}>{record.name}</span>,
     },
     { label: '完成时间', dataIndex: 'deadline', style: { wordBreak: 'break-all' }, width: '10%' },
     { label: '负责人', dataIndex: 'leader', width: '10%' },
@@ -151,6 +155,11 @@ export default function overview() {
       }
     });
   };
+
+  const jumpToProject = (id: number) => {
+    dispatch(modifyProjectId(id));
+    window.location.href = '#/project/tasks';
+  }
 
   const translateProjectStatus = (status: number) => {
     switch (status) {

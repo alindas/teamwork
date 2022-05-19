@@ -17,7 +17,7 @@ export const TaskPage = () => {
     const [filter, setFilter] = React.useState<{p: number, m: number, n: string, me: number}>({p: -1, m: -1, n: '', me: -1});
     const [milestones, setMilestones] = React.useState<ProjectMilestone[]>([]);
     const isUnmounted = React.useRef(false);
-    const user: User = useSelector((state: any) => state.user);
+    const user: User = useSelector((state: any) => state.user.userInfo);
 
     React.useEffect(() => {
         fetchTasks();

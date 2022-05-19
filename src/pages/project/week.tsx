@@ -5,18 +5,24 @@ import { Row, Icon, Badge, Col, Button } from '../../components';
 import { ProjectWeek } from '../../common/protocol';
 import { request } from '../../common/request';
 import { Viewer } from '../task/viewer';
+import { useSelector } from 'react-redux';
 
-export const Weeks = (props: { pid: number, isAdmin: boolean }) => {
+export const Weeks = () => {
     const [week, setWeek] = React.useState<moment.Moment>(moment().startOf('week'));
     const [data, setData] = React.useState<ProjectWeek>({ archived: [], unarchived: [] });
+    const {projectId, isAdmin} = useSelector((state: any) => state.project);
 
     React.useEffect(() => {
-        fetchWeekData();
-    }, [props, week]);
+        if (projectId == -1) {
+            window.location.href = '#/project';
+        } else {
+            fetchWeekData();
+        }
+    }, [projectId, week]);
 
     const fetchWeekData = () => {
         request({
-            url: `/api/project/${props.pid}/week/${week.unix()}`,
+            url: `/api/project/${projectId}/week/${week.unix()}`,
             success: (rsp: ProjectWeek) => {
                 rsp.unarchived.sort((a, b) => a.state == b.state ? moment(a.endTime).diff(b.endTime) : a.state - b.state);
                 setData(rsp);
@@ -44,11 +50,11 @@ export const Weeks = (props: { pid: number, isAdmin: boolean }) => {
                     <div className='divider-h my-2' />
 
                     {data.unarchived.map(t => (
-                        <Row flex={{ align: 'middle', justify: 'space-between' }} className='mb-2'>
+                        <Row flex={{ align: 'middle', justify: 'space-between' }} className='mb-2' key={t.id}>
                             <span className='px-1 text-ellipsis'>
                                 <Icon type={t.state == 3 ? 'question-circle' : 'close-circle'} className={t.state == 3 ? 'mr-1 fg-info' : 'mr-1 fg-danger'} />
                                 {t.endTime}
-                                <a className='ml-1 link' onClick={() => Viewer.open(t.id, props.isAdmin ? fetchWeekData : null)}>{t.name}</a>
+                                <a className='ml-1 link' onClick={() => Viewer.open(t.id, isAdmin ? fetchWeekData : null)}>{t.name}</a>
                             </span>
 
                             <span className='px-1'>
@@ -66,7 +72,7 @@ export const Weeks = (props: { pid: number, isAdmin: boolean }) => {
                     <div className='divider-h my-2' />
 
                     {data.archived.map(t => (
-                        <Row flex={{ align: 'middle', justify: 'space-between' }} className='mb-2'>
+                        <Row flex={{ align: 'middle', justify: 'space-between' }} className='mb-2' key={t.id}>
                             <span className='px-1 text-ellipsis'>
                                 <Icon type='check' className='mr-1 fg-success' />
                                 <a className='ml-1 link' onClick={() => Viewer.open(t.id)}>{t.name}</a>

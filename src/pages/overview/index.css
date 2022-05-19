@@ -13,6 +13,10 @@
   overflow: auto;
 }
 
+.overview-table .project-title:hover {
+  text-decoration: underline;
+}
+
 .overview-table .table th,
 .overview-table .table td {
   vertical-align: baseline;

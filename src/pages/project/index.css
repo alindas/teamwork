@@ -72,10 +72,10 @@
 }
 
 .project-submenu-box div:hover,
-.current-submenu-1 div:nth-of-type(1),
-.current-submenu-2 div:nth-of-type(2),
-.current-submenu-3 div:nth-of-type(3),
-.current-submenu-4 div:nth-of-type(4),
-.current-submenu-5 div:nth-of-type(5) {
+.current-submenu-summary div:nth-of-type(1),
+.current-submenu-tasks div:nth-of-type(2),
+.current-submenu-milestones div:nth-of-type(3),
+.current-submenu-weeks div:nth-of-type(4),
+.current-submenu-manager div:nth-of-type(5) {
   color: #009688;
 }

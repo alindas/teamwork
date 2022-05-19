@@ -1,21 +1,27 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 
 import { Icon, Button, Card, Row } from '../../components';
 import { Project, ProjectSummary } from '../../common/protocol';
 import { request } from '../../common/request';
 import { MDEditor, MDViewer } from '../../components/bytemd';
 
-export const Summary = (props: { proj: Project, isAdmin: boolean }) => {
+export const Summary = () => {
     const [summary, setSummary] = React.useState<ProjectSummary>(null);
     const [isEditingDesc, setEditingDesc] = React.useState<boolean>(false);
+    const {projectId, project, isAdmin} = useSelector((state: any) => state.project);
 
     React.useEffect(() => {
-        fetchSummary();
-    }, [props]);
+        if (projectId == -1) {
+            window.location.href = '#/project';
+        } else {
+            fetchSummary();
+        }
+    }, [projectId]);
 
     const fetchSummary = () => {
         request({
-            url: `/api/project/${props.proj.id}/summary`,
+            url: `/api/project/${projectId}/summary`,
             success: setSummary,
         });
     };
@@ -24,17 +30,17 @@ export const Summary = (props: { proj: Project, isAdmin: boolean }) => {
         <div>
             <div style={{ padding: '8px 16px', borderBottom: '1px solid #e2e2e2' }}>
                 <label className='text-bold fg-muted' style={{ fontSize: '1.2em' }}>
-                    <Icon type='pie-chart' className='mr-1' />【{props.proj.name}】概览
+                    <Icon type='pie-chart' className='mr-1' />【{project.name}】概览
                 </label>
             </div>
             <div className='px-3 py-2'>
                 <p style={{ fontSize: 15, fontWeight: 'bolder' }}>
                     简介
-                    {props.isAdmin && <Icon type='edit' className='fg-primary ml-1' style={{ fontWeight: 'normal' }} onClick={() => setEditingDesc(prev => !prev)} />}
+                    {isAdmin && <Icon type='edit' className='fg-primary ml-1' style={{ fontWeight: 'normal' }} onClick={() => setEditingDesc(prev => !prev)} />}
                 </p>
                 <div className='p-2'>
                     {isEditingDesc
-                        ? <Summary.DescEditor pid={props.proj.id} desc={summary.desc} onCancel={() => setEditingDesc(false)} onModified={fetchSummary} />
+                        ? <Summary.DescEditor pid={projectId} desc={summary.desc} onCancel={() => setEditingDesc(false)} onModified={fetchSummary} />
                         : <MDViewer content={summary.desc || '管理员很懒，并没写什么描述'} />}
                 </div>
 

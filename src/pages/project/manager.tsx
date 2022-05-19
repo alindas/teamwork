@@ -4,10 +4,12 @@ import { Table, Modal, Input, Form, FormProxy, FormFieldValidator, TableColumn, 
 import { Project, ProjectMember, User } from '../../common/protocol';
 import { request } from '../../common/request';
 import { ProjectRole } from '../../common/consts';
+import { useSelector } from 'react-redux';
 
-export const Manager = (props: { pid: number, onDelete: () => void }) => {
+export const Manager = (props: { onDelete: () => void }) => {
     const [proj, setProj] = React.useState<Project>();
     const refName = React.useRef<HTMLInputElement>(null);
+    const {projectId, isAdmin} = useSelector((state: any) => state.project);
 
     const memberSchema: TableColumn[] = [
         { label: '头像', renderer: (data: ProjectMember) => <Avatar size={32} src={data.user.avatar} /> },
@@ -26,11 +28,17 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
         }
     ];
 
-    React.useEffect(() => fetchProject(), [props]);
+    React.useEffect(() => {
+        if (projectId == -1 || !isAdmin) {
+            window.location.href = '#/project';
+        } else {
+            fetchProject();
+        }
+    }, [projectId, isAdmin]);
 
     const fetchProject = () => {
         request({
-            url: `/api/project/${props.pid}`, success: (data: Project) => {
+            url: `/api/project/${projectId}`, success: (data: Project) => {
                 data.members.sort((a, b) => a.user.account.localeCompare(b.user.account));
                 setProj(data);
             }
@@ -45,7 +53,7 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
             body: <div className='my-2'>确定要将【{proj.name}】改为【{newName}】吗？该操作需要手动刷新！</div>,
             onOk: () => {
                 request({
-                    url: `/api/project/${props.pid}/name`,
+                    url: `/api/project/${projectId}/name`,
                     method: 'PUT',
                     data: new URLSearchParams({ 'name': newName }),
                     success: () => { }
@@ -56,7 +64,7 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
 
     const addMember = () => {
         request({
-            url: `/api/project/${props.pid}/invites`,
+            url: `/api/project/${projectId}/invites`,
             success: (data: User[]) => {
                 let form: FormProxy = null;
                 let closer: () => void = null;
@@ -69,7 +77,7 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
                 const submit = (ev: React.FormEvent<HTMLFormElement>) => {
                     ev.preventDefault();
                     request({
-                        url: `/api/project/${props.pid}/member`,
+                        url: `/api/project/${projectId}/member`,
                         method: 'POST',
                         data: new FormData(ev.currentTarget),
                         success: () => { closer(); fetchProject() }
@@ -112,7 +120,7 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
         const submit = (ev: React.FormEvent<HTMLFormElement>) => {
             ev.preventDefault();
             request({
-                url: `/api/project/${props.pid}/member/${m.user.id}`,
+                url: `/api/project/${projectId}/member/${m.user.id}`,
                 method: 'PUT',
                 data: new FormData(ev.currentTarget),
                 success: () => { closer(); fetchProject() }
@@ -143,7 +151,7 @@ export const Manager = (props: { pid: number, onDelete: () => void }) => {
             body: <div className='my-2'>确定要删除成员【{m.user.name}】吗？</div>,
             onOk: () => {
                 request({
-                    url: `/api/project/${props.pid}/member/${m.user.id}`,
+                    url: `/api/project/${projectId}/member/${m.user.id}`,
                     method: 'DELETE',
                     success: fetchProject
                 });

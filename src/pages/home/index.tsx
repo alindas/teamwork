@@ -82,7 +82,7 @@ export const Home = () => {
                     </div>
                 </div>
 
-                <Menu defaultActive={window.location.hash.slice(2)} theme='dark'>
+                <Menu defaultActive={window.location.hash.split('/')[1]} theme='dark'>
                     {user && menus.map(m => {
                         if (m.needAdmin && !user.isSu) return null;
 
