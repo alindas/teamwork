@@ -22,11 +22,11 @@ export const AdminPage = () => {
         {label: '管理员', align: 'center', renderer: (data: User) => <Input.Switch on={data.isSu} disabled={false} onChange={() => changeUserPower(data)}/>},
         {label: '操作', renderer: (data: User) => (
             <span>
-                <a className='link' href='#!' onClick={() => editUser(data)}>编辑</a>
+                <a className='link' onClick={() => editUser(data)}>编辑</a>
                 <div className='divider-v'/>
-                <a className='link' style={data.isLocked ? {color: '#5fb878'} : {}} href='#!' onClick={() => toggleUserLock(data)}>{data.isLocked?'解锁':'禁用'}</a>
+                <a className='link' style={data.isLocked ? {color: '#5fb878'} : {}} onClick={() => toggleUserLock(data)}>{data.isLocked?'解锁':'禁用'}</a>
                 <div className='divider-v'/>
-                <a className='link' href='#!' onClick={() => delUser(data)}>删除</a>
+                <a className='link' onClick={() => delUser(data)}>删除</a>
             </span>
         )}
     ];

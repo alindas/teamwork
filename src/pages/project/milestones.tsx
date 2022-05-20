@@ -291,7 +291,11 @@ export const Milestones = () => {
                                     <p key={t.id}>
                                         {(t.state < 3 && moment(t.endTime).isBefore()) && <Icon type='warning-circle' className='fg-danger mr-1' />}
                                         <Icon type={TaskStatus[t.state].icon} style={{ color: TaskStatus[t.state].color }} />
-                                        <a href='#' className='fg-info ml-1' onClick={() => Viewer.open(t.id, isAdmin ? () => viewMilestone(view.target) : null)}>{t.name}</a>
+                                        <a
+                                            style={{cursor: 'pointer'}}
+                                            className='fg-info ml-1'
+                                            onClick={() => Viewer.open(t.id, isAdmin ? () => viewMilestone(view.target) : null)}
+                                        >{t.name}</a>
                                         <small className='ml-1 text-bold'>
                                             {t.creator.name}<Icon type='right' />{t.developer.name}<Icon type='right' />{t.tester.name}
                                         </small>
