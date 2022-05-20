@@ -112,7 +112,7 @@ export const Home = () => {
                         <Route path="/document" ><DocumentPage /></Route>
                         <Route path="/share" ><SharePage /></Route>
                         <Route path="/admin" ><AdminPage /></Route>
-                        <Route ><TaskPage /></Route>
+                        <Route ><Redirect to="/task" /></Route>
                     </Switch>
                 </HashRouter>
             </Layout.Content>
