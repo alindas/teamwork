@@ -347,49 +347,38 @@ TaskDetail.TimeEditor = (props: {task: Task, onModified: () => void}) => {
 };
 
 TaskDetail.ContentEditor = (props: {task: Task, onCancel: () => void, onModified: () => void}) => {
-    const [content, setContent] = React.useState<string>(props.task.content || '');
+    const [content, setContent] = React.useState<string>(props.task.content);
 
-    const modify = (value: string | boolean) => {
-        // 如果是保存
-        if (value === true) {
-            props.onModified();
+    const modify = () => {
+        if (props.task.content == content) {
             props.onCancel();
             return;
         }
 
-        // 如果是取消
-        let isCancel = false;
-        if (value === false) {
-            value = props.task.content;
-            isCancel = true;
-        } else {
-            setContent(value);
-        }
-
-        if (value.length == 0) {
+        if (content.length == 0) {
             Notification.alert('任务详情不可为空', 'error');
             return;
         }
 
         let param = new FormData();
-        param.append('content', value);
+        param.append('content', content);
         request({
             url: `/api/task/${props.task.id}/content`,
             method: 'PUT',
             data: param,
-            showLoading: false,
             success: () => {
-                isCancel && props.onCancel();
+                props.onCancel();
+                props.onModified();
             }
         })
     };
 
     return (
         <div>
-            <MDEditor content={content} setContent={modify} />
+            <MDEditor content={content} setContent={setContent} />
             <div className='mt-2 center-child'>
-                <Button theme='primary' size='sm' onClick={() => modify(true)}>修改</Button>
-                <Button size='sm' onClick={() => modify(false)}>取消</Button>
+                <Button theme='primary' size='sm' onClick={modify}>修改</Button>
+                <Button size='sm' onClick={props.onCancel}>取消</Button>
             </div>
         </div>
     )

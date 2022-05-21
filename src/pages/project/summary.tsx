@@ -79,32 +79,21 @@ export const Summary = () => {
 Summary.DescEditor = (props: { pid: number, desc: string, onCancel: () => void, onModified: () => void }) => {
     const [content, setContent] = React.useState<string>(props.desc || '');
 
-    const modify = (value: string | boolean) => {
-        // 如果是保存
-        if (value === true) {
-            props.onModified();
+    const modify = () => {
+        if (props.desc == content) {
             props.onCancel();
             return;
         }
 
-        // 如果是取消
-        let isCancel = false;
-        if (value === false) {
-            value = props.desc;
-            isCancel = true;
-        } else {
-            setContent(value);
-        }
-
         let param = new FormData();
-        param.append('desc', value);
+        param.append('desc', content);
         request({
             url: `/api/project/${props.pid}/desc`,
             method: 'PUT',
             data: param,
-            showLoading: false,
             success: () => {
-                isCancel && props.onCancel();
+                props.onCancel();
+                props.onModified();
             }
         })
     };
@@ -112,12 +101,13 @@ Summary.DescEditor = (props: { pid: number, desc: string, onCancel: () => void, 
     return (
         <div>
             <div style={{width: '50%', height: '300px'}}>
-                <MDEditor content={content} setContent={modify} />
+                <MDEditor content={content} setContent={setContent} />
             </div>
             <div className='mt-2 center-child'>
-                <Button theme='primary' size='sm' onClick={() => modify(true)}>修改</Button>
-                <Button size='sm' onClick={() => modify(false)}>取消</Button>
+                <Button theme='primary' size='sm' onClick={modify}>修改</Button>
+                <Button size='sm' onClick={props.onCancel}>取消</Button>
             </div>
         </div>
     )
 }
+

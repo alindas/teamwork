@@ -211,31 +211,16 @@ export const DocumentPage = () => {
         });
     };
 
-    const editDoc = (value: string | boolean) => {
-        // 如果是保存
-        if (value === true) {
-            fetchDetail(current, false);
-            return;
-        }
-
-        // 如果是取消
-        let isCancel = false;
-        if (value === false) {
-            value = current.content;
-            isCancel = true;
-        } else {
-            setEditContent(value);
-        }
-        if (!isCancel && (!value || value.length == 0 || value == current.content)) return;
+    const editDoc = () => {
+        if (!current || editContent.length == 0 || editContent == current.content) return;
 
         let param = new FormData();
-        param.append('content', value);
+        param.append('content', editContent);
         request({
             url: `/api/document/${current.id}/content`,
             method: 'PUT',
             data: param,
-            showLoading: false,
-            success: () => isCancel && fetchDetail(current, false),
+            success: () => fetchDetail(current, false),
         });
     };
 
@@ -273,10 +258,10 @@ export const DocumentPage = () => {
             <Layout.Content>
                 {isEditing ? (
                     <div className='mt-3 px-1 document-editor'>
-                        <MDEditor content={editContent} setContent={editDoc} />
-                        <Row flex={{ align: 'middle', justify: 'center' }}>
-                            <Button theme='primary' size='sm' onClick={() => editDoc(true)}>保存修改</Button>
-                            <Button theme='default' size='sm' onClick={() => editDoc(false)}>取消</Button>
+                        <MDEditor content={editContent} setContent={setEditContent} />
+                        <Row flex={{align: 'middle', justify: 'center'}}>
+                            <Button theme='primary' size='sm' onClick={editDoc}>保存修改</Button>
+                            <Button theme='default' size='sm' onClick={() => setEditing(false)}>取消</Button>
                         </Row>
                     </div>
                 ) : (
