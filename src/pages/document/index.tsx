@@ -7,11 +7,12 @@ import { MDEditor, MDViewer } from '../../components/bytemd';
 import './index.css';
 
 export const DocumentPage = () => {
-    const editingStatus = React.useRef({isEditing: false, article: null});
     const [nodes, setNodes] = React.useState<TreeNode[]>([]);
-    const [current, setCurrent] = React.useState<Document>(null);
+    const [initial, setInitial] = React.useState<Document>(null);
     const [isEditing, setEditing] = React.useState<boolean>(false);
     const [editContent, setEditContent] = React.useState<string>();
+
+    const editingStatus = React.useRef({ isEditing: false, articleId: -1, articleContent: null });
     const isUnmounted = React.useRef(false);
 
     const nodeContextMenu: TreeNodeAction[] = [
@@ -22,14 +23,21 @@ export const DocumentPage = () => {
         { label: '删除', onClick: n => delDoc(n.data.id), isEnabled: n => n.data != null },
     ];
 
-    // 如果是离开当前文档时没有退出保存，则询问
+    // 组件卸载时当前文档时没有退出保存，则询问
     React.useEffect(() => {
         fetchAll();
         return () => {
             isUnmounted.current = true;
-            if (editingStatus.current.isEditing) {
-                if (!confirm('当前文档编辑内容尚未保存，是否保存？')) {
-                    restoreDocBeforeLeave(editingStatus.current.article);
+            if (editingStatus.current.isEditing && editingStatus.current.articleContent) {
+                if (confirm('当前文档编辑内容尚未保存，是否保存？')) {
+                    let param = new FormData();
+                    param.append('content', editingStatus.current.articleContent);
+                    request({
+                        url: `/api/document/${editingStatus.current.articleId}/content`,
+                        method: 'PUT',
+                        data: param,
+                        showLoading: false
+                    });
                 };
             }
         }
@@ -80,9 +88,9 @@ export const DocumentPage = () => {
         request({
             url: `/api/document/${doc.id}`,
             success: (data: Document) => {
-                setCurrent(data);
+                setInitial(data);
                 editingStatus.current.isEditing = editingMode;
-                editingStatus.current.article = data;
+                editingStatus.current.articleId = data.id;
                 setEditing(editingMode);
                 setEditContent(data.content);
             }
@@ -91,14 +99,16 @@ export const DocumentPage = () => {
 
     const confirmFetchDetail = (doc: Document, editingMode: boolean) => {
         // 如果跳转的文档不是当前文档，则考虑是否还处于编辑状态
-        if (current !== null && doc.id != current.id && isEditing) {
+        if (initial !== null && doc.id != initial.id && isEditing) {
             Modal.open({
                 title: '当前文档编辑内容尚未保存，是否保存？',
                 icon: 'warning',
                 showClose: false,
-                onOk: () => fetchDetail(doc, editingMode),
+                onOk: () => {
+                    editDoc('other');
+                    fetchDetail(doc, editingMode);
+                },
                 onCancel: () => {
-                    restoreDocBeforeLeave();
                     fetchDetail(doc, editingMode);
                 }
             });
@@ -211,36 +221,22 @@ export const DocumentPage = () => {
         });
     };
 
-    const editDoc = () => {
-        if (!current || editContent.length == 0 || editContent == current.content) return;
+    const editDoc = (type: 'self' | 'other') => {
+        if (!initial || editContent.length == 0 || editContent == initial.content) return;
 
         let param = new FormData();
         param.append('content', editContent);
         request({
-            url: `/api/document/${current.id}/content`,
+            url: `/api/document/${initial.id}/content`,
             method: 'PUT',
             data: param,
-            success: () => fetchDetail(current, false),
-        });
-    };
-
-    // 尚未保存文档便离开当前文档后取消更新
-    const restoreDocBeforeLeave = (currentArticle?: Document | undefined) => {
-        let article = currentArticle??current;
-        if (!article) return;
-        let param = new FormData();
-        param.append('content', article.content);
-        request({
-            url: `/api/document/${article.id}/content`,
-            method: 'PUT',
-            data: param,
-            showLoading: false,
+            success: type === 'self' ? () => fetchDetail(initial, false) : () => null,
         });
     };
 
     const delDoc = (id: number) => {
         request({ url: `/api/document/${id}`, method: 'DELETE', success: fetchAll });
-        setCurrent(null);
+        setInitial(null);
     };
 
     return (
@@ -258,15 +254,15 @@ export const DocumentPage = () => {
             <Layout.Content>
                 {isEditing ? (
                     <div className='mt-3 px-1 document-editor'>
-                        <MDEditor content={editContent} setContent={setEditContent} />
-                        <Row flex={{align: 'middle', justify: 'center'}}>
-                            <Button theme='primary' size='sm' onClick={editDoc}>保存修改</Button>
-                            <Button theme='default' size='sm' onClick={() => setEditing(false)}>取消</Button>
+                        <MDEditor content={editContent} setContent={(val) => { setEditContent(val); editingStatus.current.articleContent = val;}} />
+                        <Row flex={{ align: 'middle', justify: 'center' }}>
+                            <Button theme='primary' size='sm' onClick={() => editDoc('self')}>保存修改</Button>
+                            <Button theme='default' size='sm' onClick={() => { setEditing(false); editingStatus.current.isEditing = false; }}>取消</Button>
                         </Row>
                     </div>
                 ) : (
                     <div className='mt-3 px-2'>
-                        {current && <MDViewer content={current.content} />}
+                        {initial && <MDViewer content={initial.content} />}
                     </div>
                 )}
             </Layout.Content>
