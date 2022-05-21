@@ -15,7 +15,7 @@
 
 /* 图片宽度设定为 400 */
 .markdown-body img {
-  width: 400px;
+  max-width: 150px;
 }
 
 /* 调整全屏查看图片堆叠层级 */
@@ -25,4 +25,8 @@
 
 .medium-zoom-image--opened {
   z-index: 999;
+}
+
+.markdown-body p {
+  margin-bottom: 8px;
 }
