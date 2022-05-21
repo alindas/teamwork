@@ -1,15 +1,16 @@
 import * as React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { Table, Modal, Input, Form, FormProxy, FormFieldValidator, TableColumn, Avatar, Badge, Icon, Row, Card, Button } from '../../components';
 import { Project, ProjectMember, User } from '../../common/protocol';
 import { request } from '../../common/request';
 import { ProjectRole } from '../../common/consts';
-import { useSelector } from 'react-redux';
+import { modifyProject } from '../../model/reducers/project';
 
 export const Manager = (props: { onDelete: () => void }) => {
-    const [proj, setProj] = React.useState<Project>();
     const refName = React.useRef<HTMLInputElement>(null);
-    const {projectId, isAdmin} = useSelector((state: any) => state.project);
+    const {projectId, project, isAdmin} = useSelector((state: any) => state.project);
+    const dispatch = useDispatch();
 
     const memberSchema: TableColumn[] = [
         { label: '头像', renderer: (data: ProjectMember) => <Avatar size={32} src={data.user.avatar} /> },
@@ -31,8 +32,6 @@ export const Manager = (props: { onDelete: () => void }) => {
     React.useEffect(() => {
         if (projectId == -1 || !isAdmin) {
             window.location.href = '#/project';
-        } else {
-            fetchProject();
         }
     }, [projectId, isAdmin]);
 
@@ -40,7 +39,7 @@ export const Manager = (props: { onDelete: () => void }) => {
         request({
             url: `/api/project/${projectId}`, success: (data: Project) => {
                 data.members.sort((a, b) => a.user.account.localeCompare(b.user.account));
-                setProj(data);
+                dispatch(modifyProject({ project: data }));
             }
         });
     };
@@ -50,13 +49,13 @@ export const Manager = (props: { onDelete: () => void }) => {
 
         Modal.open({
             title: '更新项目名',
-            body: <div className='my-2'>确定要将【{proj.name}】改为【{newName}】吗？该操作需要手动刷新！</div>,
+            body: <div className='my-2'>确定要将【{project.name}】改为【{newName}】吗？</div>,
             onOk: () => {
                 request({
                     url: `/api/project/${projectId}/name`,
                     method: 'PUT',
                     data: new URLSearchParams({ 'name': newName }),
-                    success: () => { }
+                    success: fetchProject
                 });
             }
         });
@@ -162,9 +161,9 @@ export const Manager = (props: { onDelete: () => void }) => {
     const delProj = () => {
         Modal.open({
             title: '删除确认',
-            body: <div className='my-2'>请再次确认：要删除项目【{proj.name}】吗？</div>,
+            body: <div className='my-2'>请再次确认：要删除项目【{project.name}】吗？</div>,
             onOk: () => {
-                request({ url: `/api/project/${proj.id}`, method: 'DELETE', success: props.onDelete });
+                request({ url: `/api/project/${project.id}`, method: 'DELETE', success: props.onDelete });
             }
         });
     };
@@ -172,9 +171,9 @@ export const Manager = (props: { onDelete: () => void }) => {
     const archiveProj = () => {
         Modal.open({
             title: '归档确认',
-            body: <div className='my-2'>请再次确认：要归档项目【{proj.name}】吗？</div>,
+            body: <div className='my-2'>请再次确认：要归档项目【{project.name}】吗？</div>,
             onOk: () => {
-                request({ url: `/api/project/${proj.id}/dump`, method: 'PUT', success: props.onDelete });
+                request({ url: `/api/project/${project.id}/dump`, method: 'PUT', success: props.onDelete });
             }
         });
     }
@@ -194,7 +193,7 @@ export const Manager = (props: { onDelete: () => void }) => {
                 shadowed>
 
                 <div className='input'>
-                    <input ref={refName} defaultValue={proj ? proj.name : ''} />
+                    <input ref={refName} defaultValue={project ? project.name : ''} />
                 </div>
 
                 <Button size='sm' theme='primary' className='mt-2' onClick={rename}>更新</Button>
@@ -214,7 +213,7 @@ export const Manager = (props: { onDelete: () => void }) => {
                 }
                 bordered
                 shadowed>
-                <Table dataSource={proj ? proj.members : []} columns={memberSchema} />
+                <Table dataSource={project ? project.members : []} columns={memberSchema} />
             </Card>
 
             <Card
