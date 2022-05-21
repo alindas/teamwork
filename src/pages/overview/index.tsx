@@ -1,6 +1,5 @@
 import * as moment from "moment";
 import React, { useEffect, useState } from "react";
-import { Scrollbars } from 'react-custom-scrollbars-2';
 import { useDispatch } from "react-redux";
 
 import { OverviewProject, User } from "../../common/protocol";
@@ -303,7 +302,7 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
   }
 
   const gantt = React.useMemo(() => <Gantt projects={filterTasks ?? []} onModified={fetchTasks} onRouteChange={jumpToProject}/>, [filterTasks]);
-  const table = React.useMemo(() => <Table dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'} />, [filterTasks]);
+  const table = React.useMemo(() => <Table fixed dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'} />, [filterTasks]);
 
   const renderTable = (record: any, key: string) => {
     return (
@@ -349,7 +348,7 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
         </Row>
       </div>
       <div className='px-2 mt-3' style={{ height: 'calc(100vh - 1rem)', overflow: 'hidden' }}>
-        {useGantt ? <div className="overview-gantt">{gantt}</div> : <div className="overview-table"><Scrollbars>{table}</Scrollbars></div>}
+        {useGantt ? <div className="overview-gantt">{gantt}</div> : <div className="overview-table">{table}</div>}
       </div>
     </div>
   );
