@@ -118,6 +118,10 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
       if (members[i].isAdmin) {
         temp += temp === '' ? members[i].user.name : `，${members[i].user.name}`;
       }
+      // 设定负责人数量的上限为 2
+      if (i == 1) {
+        break;
+      }
     }
     return temp;
   }
