@@ -20,6 +20,7 @@
     "moment": "^2.24.0",
     "rc-table": "^7.24.0",
     "react": "^16.12.0",
+    "react-activation": "^0.11.2",
     "react-beautiful-dnd": "^12.2.0",
     "react-custom-scrollbars-2": "^4.4.0",
     "react-dom": "^16.12.0",

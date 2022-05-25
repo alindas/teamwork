@@ -6,6 +6,7 @@ import {
     Redirect,
 } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
+import KeepAlive from 'react-activation';
 
 import { Avatar, Badge, Drawer, Layout, Menu, Icon } from '../../components';
 import { request } from '../../common/request';
@@ -106,7 +107,11 @@ export const Home = () => {
                 <HashRouter>
                     <Switch>
                         <Route path="/" exact><Redirect to="/task" /></Route>
-                        <Route path="/overview" ><OverviewPage changeRoute={setCurrentMenu}/></Route>
+                        <Route path="/overview" >
+                            <KeepAlive cacheKey="overview">
+                                <OverviewPage changeRoute={setCurrentMenu}/>
+                            </KeepAlive>
+                        </Route>
                         <Route path="/task" ><TaskPage /></Route>
                         <Route path="/project" ><ProjectPage /></Route>
                         <Route path="/document" ><DocumentPage /></Route>
