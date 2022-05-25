@@ -76,7 +76,7 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
       label: '任务状态',
       dataIndex: 'state',
       renderer: (record: any, _: number, __: number) => renderTable(record.taskSlice, 'state'),
-      style: { padding: 0 },
+      style: { padding: 0, minWidth: '59.5px' },
       width: '5%'
     },
   ];

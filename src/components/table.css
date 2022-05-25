@@ -38,5 +38,11 @@
 }
 
 .table-body {
-  height: calc(100% - 39px);
+  height: calc(100% - 58px);
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.table-body table,
+.table-body table tfoot td {
+  border-bottom: 0;
 }

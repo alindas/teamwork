@@ -61,7 +61,7 @@ export const Table = (props: TableProps) => {
         let sorted = sortTimes[idx];
 
         return (
-            <th key={idx} scope='col' onClick={() => sortRecords(idx)}>
+            <th key={idx} scope='col' onClick={() => sortRecords(idx)} style={col.style}>
                 {col.label}
                 {col.sorter && (
                     <span className='table-sorter'>
