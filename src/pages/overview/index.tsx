@@ -9,6 +9,7 @@ import { Gantt } from "./gantt-overview";
 import './index.css';
 import { downloadFile } from '../../util/common'
 import { modifyProjectId } from "../../model/reducers/project";
+import { useActivate } from "react-activation";
 
 const { Select, DatePicker } = Input;
 
@@ -80,6 +81,12 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
       width: '5%'
     },
   ];
+
+  // 激活时触发数据的更新
+  useActivate(() => {
+    fetchUsers();
+    fetchTasks();
+  });
 
   useEffect(() => {
     fetchUsers();
