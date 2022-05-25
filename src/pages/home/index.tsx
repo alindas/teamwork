@@ -38,6 +38,12 @@ export const Home = () => {
         fetchUserInfo();
         fetchNotices();
         setInterval(fetchNotices, 60000);
+        window.onhashchange = () => {
+            setCurrentMenu(window.location.hash.split('/')[1]??'task');
+        }
+        return () => {
+            window.onhashchange = null;
+        }
     }, []);
 
     const fetchUserInfo = () => {
@@ -49,7 +55,6 @@ export const Home = () => {
     };
 
     const changeMenu = (route: string) => {
-        setCurrentMenu(route);
         window.location.href = '#/' + route;
     }
 
@@ -98,7 +103,7 @@ export const Home = () => {
                 </Menu>
 
                 <div style={{ position: 'absolute', left: 0, bottom: 16, width: '100%', textAlign: 'center' }}>
-                    <Icon style={{ fontSize: 24 }} type='export' title='退出' onClick={() => location.href = '/logout'} /><br />
+                    <Icon style={{ fontSize: 24 }} type='export' title='退出' onClick={() => window.location.href = '/logout'} /><br />
                     <label style={{ fontSize: 11 }}>退出登录</label>
                 </div>
             </Layout.Sider>
@@ -109,7 +114,7 @@ export const Home = () => {
                         <Route path="/" exact><Redirect to="/task" /></Route>
                         <Route path="/overview" >
                             <KeepAlive cacheKey="overview">
-                                <OverviewPage changeRoute={setCurrentMenu}/>
+                                <OverviewPage/>
                             </KeepAlive>
                         </Route>
                         <Route path="/task" ><TaskPage /></Route>

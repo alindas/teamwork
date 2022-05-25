@@ -27,7 +27,7 @@ const InitialFilter = {
   taskKey: ''
 }
 
-export default function overview(props: {changeRoute: (route: string) => void}) {
+export default function overview() {
   const [filter, setFilter] = useState<TFilter>(InitialFilter);
   const [tasks, setTasks] = useState<OverviewProject[]>([]);
   const [filterTasks, setFilterTasks] = useState<OverviewProject[] | null>(null);
@@ -166,7 +166,6 @@ export default function overview(props: {changeRoute: (route: string) => void}) 
   const jumpToProject = (id: number) => {
     dispatch(modifyProjectId(id));
     window.location.href = '#/project/tasks';
-    props.changeRoute('project');
   }
 
   const translateProjectStatus = (status: number) => {

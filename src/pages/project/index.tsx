@@ -52,6 +52,8 @@ export const ProjectPage = () => {
         }
         return () => {
             isUnmounted.current = true;
+            // 离开组件时更新子项目为空
+            dispatch(modifyProjectId(-1));
         }
     }, []);
 
