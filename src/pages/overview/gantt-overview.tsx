@@ -8,8 +8,9 @@ import { Empty } from '../../components';
 
 interface GanttProps {
   projects: OverviewProject[];
-  onModified?: () => void;
+  startDate: string;
   onRouteChange: (project: number) => void;
+  onModified?: () => void;
 };
 
 export const Gantt = (props: GanttProps) => {
@@ -20,6 +21,7 @@ export const Gantt = (props: GanttProps) => {
   const [scollWidth, setScrollWidth] = React.useState<number>(20);
   const timelineRef = React.useRef<HTMLDivElement>();
   const briefRef = React.useRef<HTMLDivElement>();
+  const graphRef = React.useRef<HTMLDivElement>();
 
   const CellWidth = 36;
   const CellHeight = 22;
@@ -66,6 +68,9 @@ export const Gantt = (props: GanttProps) => {
     makeTimeline(start, end);
     makeBrief(groups, totalTask);
     makeGraph(groups, start, end, totalTask);
+    /** 当任务时间线过长时，自动滑动到过滤时间起点位置 */
+    props.projects.length != 0 && setTimeout(() => graphRef.current.scrollLeft = moment(props.startDate).diff(start, 'day') * CellWidth);
+
   }, [props.projects]);
 
   /** 顶部任务完成统计情况 */
@@ -260,7 +265,7 @@ export const Gantt = (props: GanttProps) => {
     }
 
     setGraph(
-      <div style={{ width: '100%', maxHeight: 'calc(100vh - 200px)', overflow: 'auto', border: '1px solid #b8b9bb' }} onScroll={syncScroll}>
+      <div ref={graphRef} style={{ width: '100%', maxHeight: 'calc(100vh - 200px)', overflow: 'auto', border: '1px solid #b8b9bb' }} onScroll={syncScroll}>
         <svg width={width} height={height}>
           {...grid}
 

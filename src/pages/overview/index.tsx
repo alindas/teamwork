@@ -311,7 +311,7 @@ export default function overview() {
     }
   }
 
-  const gantt = React.useMemo(() => <Gantt projects={filterTasks ?? []} onModified={fetchTasks} onRouteChange={jumpToProject}/>, [filterTasks]);
+  const gantt = React.useMemo(() => <Gantt startDate={filter.startDate}  projects={filterTasks ?? []} onModified={fetchTasks} onRouteChange={jumpToProject}/>, [filterTasks]);
   const table = React.useMemo(() => <Table fixed dataSource={filterTasks} columns={taskSchema} pagination={15} emptyLabel={filterTasks == null ? '请通过查找按钮获取首屏数据' : '暂无数据'} />, [filterTasks]);
 
   const renderTable = (record: any, key: string) => {
