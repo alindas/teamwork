@@ -213,8 +213,6 @@ export default function overview() {
   }
 
   const findTask = () => {
-    console.log(filter);
-
     const { startDate, endDate, memberKey, taskKey } = filter;
     const taskReg = new RegExp(taskKey, 'i');
     const memberReg = new RegExp(memberKey, 'i');
