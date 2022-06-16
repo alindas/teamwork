@@ -3,6 +3,7 @@ import * as React from 'react';
 import {Row, Card, TableColumn, Input, Table, Button, Icon, Modal, Form, FormProxy, FormFieldValidator} from '../../components';
 import {User} from '../../common/protocol';
 import {request} from '../../common/request';
+import './index.css';
 
 export const AdminPage = () => {
     const [users, setUsers] = React.useState<User[]>([]);
@@ -187,6 +188,7 @@ export const AdminPage = () => {
     return (
         <div className='m-4'>
             <Card
+                className='admin-table-container'
                 bodyProps={{className: 'px-2 py-3'}}
                 header={
                     <Row flex={{align: 'middle', justify: 'space-between'}}>
@@ -194,7 +196,8 @@ export const AdminPage = () => {
                         <Button theme='link' onClick={addUser}><Icon type='plus' className='mr-1'/>添加用户</Button>
                     </Row>}
                 bordered
-                shadowed>
+                shadowed
+            >
                 <Table dataSource={users} columns={userSchema} pagination={15}/>
             </Card>
         </div>

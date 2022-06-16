@@ -1,0 +1,9 @@
+.admin-table-container {
+  height: calc(100vh - 3rem);
+}
+
+/* 用户列表限制高度 */
+.admin-table-container .card-body {
+  max-height: none;
+  height: calc(100% - 47px);
+}
