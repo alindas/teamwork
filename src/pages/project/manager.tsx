@@ -5,7 +5,7 @@ import { Table, Modal, Input, Form, FormProxy, FormFieldValidator, TableColumn, 
 import { Project, ProjectMember, User } from '../../common/protocol';
 import { request } from '../../common/request';
 import { ProjectRole } from '../../common/consts';
-import { modifyProject } from '../../model/reducers/project';
+import { modifyProject, modifyProjectId } from '../../model/reducers/project';
 
 export const Manager = (props: { onDelete: () => void }) => {
     const refName = React.useRef<HTMLInputElement>(null);
@@ -163,7 +163,14 @@ export const Manager = (props: { onDelete: () => void }) => {
             title: '删除确认',
             body: <div className='my-2'>请再次确认：要删除项目【{project.name}】吗？</div>,
             onOk: () => {
-                request({ url: `/api/project/${project.id}`, method: 'DELETE', success: props.onDelete });
+                request({
+                    url: `/api/project/${project.id}`,
+                    method: 'DELETE',
+                    success: () => {
+                        props.onDelete();
+                        dispatch(modifyProjectId(-1));
+                    }
+                });
             }
         });
     };
