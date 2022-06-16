@@ -21,8 +21,8 @@ type TFilter = {
 }
 
 const InitialFilter = {
-  startDate: moment().subtract(1, 'M').format('YYYY-MM'),
-  endDate: moment().add(1, 'M').format('YYYY-MM'),
+  startDate: moment().subtract(1, 'M').format('YYYY-MM-DD'),
+  endDate: moment().add(1, 'M').format('YYYY-MM-DD'),
   memberKey: '',
   taskKey: ''
 }
@@ -213,6 +213,8 @@ export default function overview() {
   }
 
   const findTask = () => {
+    console.log(filter);
+
     const { startDate, endDate, memberKey, taskKey } = filter;
     const taskReg = new RegExp(taskKey, 'i');
     const memberReg = new RegExp(memberKey, 'i');
@@ -222,8 +224,7 @@ export default function overview() {
       for (let slice of task.taskSlice) {
         if ((taskKey === '' || taskReg.test(slice.describe)) &&
           (memberKey === '' || memberReg.test(slice.member)) &&
-          !((moment(startDate).isAfter(slice.endTime.slice(0, -3))) ||
-            (moment(endDate).isBefore(slice.startTime.slice(0, -3))))
+          !((moment(startDate).isAfter(slice.endTime)) || (moment(endDate).isBefore(slice.startTime)))
         ) {
           taskSlice.push(slice);
         }
@@ -332,11 +333,11 @@ export default function overview() {
         <Row flex={{ align: 'middle', justify: 'center' }}>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>开始时间</label>
-            <DatePicker style={{ width: 128 }} name='startDate' mode={['year', 'month']} value={filter.startDate} onChange={handleStartDateChange} />
+            <DatePicker style={{ width: 128 }} name='startDate' mode='date' value={filter.startDate} onChange={handleStartDateChange} />
           </div>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>截至时间</label>
-            <DatePicker style={{ width: 128 }} name='endDate' mode={['year', 'month']} value={filter.endDate} onChange={handleEndDateChange} />
+            <DatePicker style={{ width: 128 }} name='endDate' mode='date' value={filter.endDate} onChange={handleEndDateChange} />
           </div>
           <div style={{ marginRight: '1em' }}>
             <label className='mr-1'>选择成员</label>
