@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Row, Card, TableColumn, Input, Table, Button, Icon, Modal, Form, FormProxy, FormFieldValidator} from '../../components';
+import {Row, Card, TableColumn, Input, Table, Button, Icon, Modal, Form, FormProxy, FormFieldValidator, Notification} from '../../components';
 import {User} from '../../common/protocol';
 import {request} from '../../common/request';
 import './index.css';
@@ -23,7 +23,7 @@ export const AdminPage = () => {
         {label: '管理员', align: 'center', renderer: (data: User) => <Input.Switch on={data.isSu} disabled={false} onChange={() => changeUserPower(data)}/>},
         {label: '操作', renderer: (data: User) => (
             <span>
-                <a className='link' onClick={() => editUser(data)}>编辑</a>
+                <a className='link' onClick={() => editUser(data)}>重置</a>
                 <div className='divider-v'/>
                 <a className='link' style={data.isLocked ? {color: '#5fb878'} : {}} onClick={() => toggleUserLock(data)}>{data.isLocked?'解锁':'禁用'}</a>
                 <div className='divider-v'/>
@@ -103,56 +103,16 @@ export const AdminPage = () => {
     };
 
     const editUser = (user: User) => {
-        let form: FormProxy = null;
-        let closer: () => void = null;
-
-        const validator: {[k: string]: FormFieldValidator} = {
-            account: {
-                required: '帐号不可为空',
-                length: {min: 2, max: 32, message: '帐号最大32个字符'},
-                pattern: {test: /[\w\d_]+/, message: '帐号格式非法，只能使用数字、字母及下划线'}
-            },
-            name: {
-                required: '显示昵称不可为空',
-                length: {min: 2, max: 32, message: '昵称最大32个字符'}
-            },
-            password: {
-                required: '用户密码不能为空',
-            },
-        };
-
-        const submit = (ev: React.FormEvent<HTMLFormElement>) => {
-            ev.preventDefault();
-            request({
-                url: `/admin/user/${user.id}`,
-                method: 'PUT',
-                data: new FormData(ev.currentTarget),
-                success: () => {
-                    fetchUsers();
-                    closer();
-                }
-            });
-        };
-
-        closer = Modal.open({
-            title: '编辑用户',
-            body: (
-                <Form style={{width: 400}} form={() => {form = Form.useForm(validator); return form}} onSubmit={submit}>
-                    <Form.Field htmlFor='account' label='帐号'>
-                        <Input name='account' value={user.account}/>
-                    </Form.Field>
-                    <Form.Field htmlFor='name' label='昵称'>
-                        <Input name='name' value={user.name}/>
-                    </Form.Field>
-                    <Form.Field htmlFor='password' label='密码'>
-                        <Input name='password' value={''}/>
-                    </Form.Field>
-                    <Form.Field htmlFor='isSu'>
-                        <Input.Checkbox name='isSu' label='拥有超级管理员权限' value='1' checked={user.isSu}/>
-                    </Form.Field>
-                </Form>
-            ),
-            onOk: () => {form.submit(); return false},
+        Modal.open({
+            title: '密码重置确认',
+            body: <div className='my-2'>密码将被重置为 【123456】，是否继续？</div>,
+            onOk: () => {
+                request({
+                    url: `/admin/user/${user.id}/rstpsw`,
+                    method: 'PUT',
+                    success: () => Notification.alert('已将密码重置为 123456', 'info')
+                });
+            }
         });
     };
 
