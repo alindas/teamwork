@@ -39,23 +39,27 @@ const ColorPool = [
 
 export const ProjectPage = () => {
     const [projs, setProjs] = useState<Project[]>([]);
-    const [currentMenu, setCurrentMenu] = useState('');
+    const [currentMenu, setCurrentMenu] = useState(window.location.hash.split('/')[2]);
     const isUnmounted = React.useRef(false);
     const dispatch = useDispatch();
     const user: User = useSelector((state: any) => state.user.userInfo);
-    const {projectId, isAdmin} = useSelector((state: any) => state.project);
+    const { projectId, isAdmin } = useSelector((state: any) => state.project);
 
     useEffect(() => {
         fetchProjs();
-        if (projectId !== -1 && !currentMenu) {
-            setCurrentMenu(window.location.hash.split('/')[2]);
-        }
         return () => {
             isUnmounted.current = true;
             // 离开组件时更新子项目为空
             dispatch(modifyProjectId(-1));
         }
     }, []);
+
+    useEffect(() => {
+        // 如果当前 projectId 不为 -1 并且 currentMenu 为空，则清除 projectId
+        if (projectId !== -1 && !currentMenu) {
+            dispatch(modifyProjectId(-1));
+        }
+    }, [currentMenu])
 
     const fetchProjs = () => {
         request({
@@ -219,8 +223,8 @@ export const ProjectPage = () => {
                         <Route path="/project/tasks"><Tasks /></Route>
                         <Route path="/project/milestones"><Milestones /></Route>
                         <Route path="/project/weeks"><Weeks /></Route>
-                        <Route path="/project/manager"><Manager onDelete={fetchProjs}/></Route>
-                        <Route ><Redirect to="/project" /></Route>
+                        <Route path="/project/manager"><Manager onDelete={fetchProjs} /></Route>
+                        <Route ><Redirect to="/task" /></Route>
                     </Switch>
                 </HashRouter>
             </Layout.Content>
